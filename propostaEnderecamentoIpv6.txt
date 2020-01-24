@@ -1,0 +1,62 @@
+Vienna - 0000 /60
+    Sw1 - 0000 /61
+        Vlan 10 - 0000 /64
+        Vlan 11 - 0001 /64
+    Sw2 - 0008 /61
+        Vlan 100 - 0008 /64 
+        Vlan 101 - 0009 /64
+        Vlan 200 - 000a /64      
+        Vlan 201 - 000b /64
+        Vlan 202 - 000c /64
+    Vlan 255 - 000d /64
+
+    Espaço Livre:
+        000e /64
+        000f /64
+        0002 /64
+        0003 /64
+        0004 /64
+        0005 /64
+        0006 /64
+        0007 /64
+
+Budapeste - 0010 /60
+    Loopback 0 - 0010 /64 
+    Loopback 1 - 0011 /64
+    Loopback 2 - 0012 /64
+    Loopback 3 - 0013 /64
+    Loopback 4 - 0014 /64
+    Loopback 5 - 0015 /64
+    Loopback 6 - 0016 /64
+    Loopback 7 - 0017 /64
+    Loopback 8 - 0018 /64
+    Loopback 9 - 0019 /64
+
+    Espaço Livre:
+        001a -> 001f /64
+
+Liubliana - 0020 /60
+    Loopback 0 - 0020 /64 
+    Loopback 1 - 0021 /64
+    Loopback 2 - 0022 /64
+    Loopback 3 - 0023 /64
+    Loopback 4 - 0024 /64
+    Loopback 5 - 0025 /64
+    Loopback 6 - 0026 /64
+    Loopback 7 - 0027 /64
+    
+    Espaço Livre:
+        0028 /61
+
+Bratislava - 0030 /60
+    Loopback 0 - 0030 /64 
+    Loopback 1 - 0031 /64
+    Loopback 2 - 0032 /64
+    Loopback 3 - 0033 /64
+    Loopback 4 - 0034 /64
+
+    Espaço Livre:
+        0035 /64
+        0036 /64
+        0037 /64
+        0038 /61

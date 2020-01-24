@@ -1,0 +1,196 @@
+------------------------------------Liubliana----------------------------------------
+version 15.1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+service password-encryption
+!
+hostname LiublianaBranch
+!
+!
+!
+!
+!
+!
+!
+!
+no ip cef
+ipv6 unicast-routing
+!
+!
+!
+!
+username cisco privilege 15 secret 5 $1$mERr$9cTjUIEqNGurQiFU.ZeCi1
+!
+!
+! license udi pid CISCO2911/K9 sn FTX15248TE5-
+!
+!
+!
+!
+!
+!
+!
+!
+!
+ip domain-name cisco.com
+!
+ip host Vienna 193.136.60.106
+ip host Budapest 209.165.200.98
+ip host Liubliana 63.49.54.22
+ip host Bratislava 56.16.20.214
+ip host ServiceProvider 63.49.54.23
+ip host MLS1 172.19.7.2
+ip host MLS2 172.19.7.3
+ip host SW1 172.19.7.4
+ip host SW2 172.19.7.5
+ip host HTTP 172.19.7.6
+ip host DHCP 172.19.7.7
+ip host AP1 172.19.7.8
+ip host AP2 172.19.7.9
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!key chain AUTH
+! key 1
+!  key-string authentication
+!
+interface Loopback0
+ ip address 172.19.18.1 255.255.255.0
+ ipv6 address 1000:0:0:0020::0001/64
+!
+interface Loopback1
+ ip address 172.19.23.1 255.255.255.0
+ ipv6 address 1000:0:0:0021::0001/64
+!
+interface Loopback2
+ ip address 172.19.19.1 255.255.255.0
+ ipv6 address 1000:0:0:0022::0001/64
+!
+interface Loopback3
+ ip address 172.19.16.1 255.255.254.0
+ ipv6 address 1000:0:0:0023::0001/64
+!
+interface Loopback4
+ ip address 172.19.20.1 255.255.255.0
+ ipv6 address 1000:0:0:0024::0001/64
+!
+interface Loopback5
+ ip address 172.19.24.1 255.255.255.128
+ ipv6 address 1000:0:0:0025::0001/64
+!
+interface Loopback6
+ ip address 172.19.21.1 255.255.255.0
+ ipv6 address 1000:0:0:0026::0001/64
+!
+interface Loopback7
+ ip address 172.19.22.1 255.255.255.0
+ ipv6 address 1000:0:0:0027::0001/64
+!
+interface GigabitEthernet0/0
+ ip address 63.49.54.22 255.255.255.252
+ duplex auto
+ speed 100000
+ no shutdown
+!
+interface GigabitEthernet0/1
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface GigabitEthernet0/2
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+! FALTA CONFIGURAR ESTES SERIALS ENTRE Liubliana e Bratislava
+interface Serial0/0/0
+ no ip address
+ clock rate 2000000
+ shutdown
+!
+interface Serial0/0/1
+ no ip address
+ clock rate 2000000
+ shutdown
+!
+! bandwidth 50000
+! ip address 209.255.200.97 255.255.255.252
+! ip ospf message-digest-key 1 md5 cisco
+! ip ospf cost 20
+! ip ospf hello-interval 6
+! ip nat inside
+! clock rate 2000000
+!
+! interface Serial0/1/0
+! bandwidth 10000
+! ip address 56.16.20.213 255.255.255.252
+! ip authentication mode eigrp 100 md5
+! ip authentication key-chain eigrp 100 AUTH
+!
+
+interface Vlan1
+ no ip address
+ shutdown
+!
+!router eigrp 100
+! eigrp router-id 1.1.1.1
+! redistribute ospf 1 metric 10000 100 255 1 1500
+! network 56.16.20.212 0.0.0.3
+
+!
+!router ospf 1
+! router-id 3.3.3.3
+! log-adjacency-changes
+! area 0 range 172.23.16.0 255.255.248.0
+! area 0 authentication message-digest
+! redistribute eigrp 100 metric 170 subnets
+! passive-interface Loopback0
+! passive-interface Loopback1
+! passive-interface Loopback2
+! passive-interface Loopback3
+! passive-interface Loopback4
+! passive-interface Loopback5
+! network 209.255.200.96 0.0.0.3 area 0
+! network 63.49.54.20 0.0.0.3 area 0
+! network 172.22.32.0 0.0.15.255 area 3
+!
+ip classless
+! IP ROUTE NOT DONE
+!ip route 0.0.0.0 0.0.0.0 87.45.123.77
+!
+ip flow-export version 9
+!
+!
+!
+no cdp run
+!
+banner login #Efetue um backup de seguranca antes de efetuar alteracoes#
+banner motd #Acesso Restrito a Utilizadores Autorizados#
+!
+!
+!
+!
+!
+line con 0
+ login local
+!
+line aux 0
+!
+line vty 0 4
+ login local
+ transport input ssh
+line vty 5 15
+ login local
+ transport input ssh
+!
+! NTP NOT DONE
+!ntp server 63.49.54.21
+!
+end

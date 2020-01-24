@@ -1,0 +1,174 @@
+------------------------------------BUDAPEST--------------------------------------------
+
+version 15.1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+service password-encryption
+!
+hostname BudapestBranch
+!
+!
+!
+!
+!
+!
+!
+!
+no ip cef
+ipv6 unicast-routing
+!
+!
+!
+username cisco privilege 15 secret 5 $1$mERr$9cTjUIEqNGurQiFU.ZeCi1
+!
+!
+! license udi pid CISCO2911/K9 sn FTX15248O69-
+!
+!
+!
+!
+!
+!
+!
+!
+!
+ip domain-name cisco.com
+!
+ip host Vienna 193.136.60.106
+ip host Budapest 209.165.200.98
+ip host Liubliana 63.49.54.22
+ip host Bratislava 56.16.20.214
+ip host ServiceProvider 209.165.200.99
+ip host MLS1 172.19.7.2
+ip host MLS2 172.19.7.3
+ip host SW1 172.19.7.4
+ip host SW2 172.19.7.5
+ip host HTTP 172.19.7.6
+ip host DHCP 172.19.7.7
+ip host AP1 172.19.7.8
+ip host AP2 172.19.7.9
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 172.19.32.1 255.255.254.0
+ ipv6 address 1000:0:0:0010::0001/64
+!
+interface Loopback1
+ ip address 172.19.37.129 255.255.255.128
+ ipv6 address 1000:0:0:0011::0001/64
+!
+interface Loopback2
+ ip address 172.19.37.1 255.255.255.128
+ ipv6 address 1000:0:0:0012::0001/64
+!
+interface Loopback3
+ ip address 172.19.38.129 255.255.255.192
+ ipv6 address 1000:0:0:0013::0001/64
+!
+interface Loopback4
+ ip address 172.19.38.1 255.255.255.128
+ ipv6 address 1000:0:0:0014::0001/64
+!
+interface Loopback5
+ ip address 172.19.38.193 255.255.255.192
+ ipv6 address 1000:0:0:0015::0001/64
+!
+interface Loopback6
+ ip address 172.19.34.1 255.255.254.0
+ ipv6 address 1000:0:0:0016::0001/64
+!
+interface Loopback7
+ ip address 172.19.39.1 255.255.255.192
+ ipv6 address 1000:0:0:0017::0001/64
+!
+interface Loopback8
+ ip address 172.19.39.65 255.255.255.192
+ ipv6 address 1000:0:0:0018::0001/64
+!
+interface Loopback9
+ ip address 172.19.36.1 255.255.255.0
+ ipv6 address 1000:0:0:0019::0001/64
+!
+interface GigabitEthernet0/0
+ ip address 209.165.200.98 255.255.255.252
+ !IPV6 MISSING
+ duplex auto
+ speed 100000
+ no shutdown
+!
+interface GigabitEthernet0/1
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface Serial0/0/0
+ bandwidth 100000
+ ip address 193.136.60.105 255.255.255.252
+ ip ospf message-digest-key 1 md5 cisco
+ ip ospf hello-interval 6
+ ip nat inside
+ clock rate 2000000
+!
+interface Serial0/0/1
+ no ip address
+ clock rate 2000000
+ shutdown
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+! OSPF NOT DONE
+!router ospf 1
+! router-id 2.2.2.2
+! log-adjacency-changes
+! area 0 authentication message-digest
+! passive-interface Loopback0
+! passive-interface Loopback1
+! passive-interface Loopback2
+! passive-interface Loopback3
+! passive-interface Loopback4
+! passive-interface Loopback5
+! network 193.136.60.104 0.0.0.3 area 0
+! network 209.255.200.96 0.0.0.3 area 0
+! network 172.22.16.0 0.0.7.255 area 2
+!
+ip classless
+!
+ip flow-export version 9
+!
+!
+!
+no cdp run
+!
+banner motd #Acesso Restrito a Utilizadores Autorizados!#
+banner login #Efetue um backup de seguranca antes de efetuar alterações.#
+!
+!
+!
+!
+!
+line con 0
+ login local
+!
+line aux 0
+!
+line vty 0 4
+ login local
+ transport input ssh
+line vty 5 15
+ login local
+ transport input ssh
+!
+! NTP NOT DONE
+! ntp server 193.136.60.106
+!
+end
