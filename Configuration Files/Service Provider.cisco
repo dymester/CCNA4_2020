@@ -124,5 +124,6 @@ line vty 5 15
  transport input ssh
 !
 !
+ntp server 193.136.60.106
 !
 end
