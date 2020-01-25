@@ -1,0 +1,297 @@
+------------------------MLS1--------------------
+version 12.2(37)SE1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+service password-encryption
+!
+hostname ViennaMLS1
+!
+!
+!
+!
+!
+!
+ip routing
+ipv6 unicast-routing
+!
+!
+!
+!
+username cisco privilege 15 secret 5 $1$mERr$9cTjUIEqNGurQiFU.ZeCi1
+!
+!
+ip domain-name cisco.com
+!
+ip host Vienna 172.19.7.1
+ip host Budapest 209.165.200.98
+ip host Liubliana 63.49.54.22
+ip host Bratislava 56.16.20.214
+ip host ServiceProvider 209.165.200.99
+ip host MLS1 172.19.7.2
+ip host MLS2 172.19.7.3
+ip host SW1 172.19.7.4
+ip host SW2 172.19.7.5
+ip host HTTP 172.19.7.6
+ip host DHCP 172.19.7.7
+ip host AP1 172.19.7.8
+ip host AP2 172.19.7.9
+!
+!
+!ip dhcp snooping vlan 100
+!no ip dhcp snooping information option
+!
+!ip domain-name cisco.com
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!Não tinha as ligações físicas à minha frente, por isso não consegui fazer Port-Channel
+!
+!interface Port-channel1
+! switchport trunk native vlan 254
+! switchport trunk allowed vlan 1-298,300-1005
+! switchport trunk encapsulation dot1q
+! switchport mode trunk
+! switchport nonegotiate
+!
+!interface Port-channel2
+! switchport trunk native vlan 254
+! switchport trunk allowed vlan 1-298,300-1005
+! switchport trunk encapsulation dot1q
+! switchport mode trunk
+! switchport nonegotiate
+!
+!interface Port-channel3
+! switchport trunk native vlan 254
+! switchport trunk allowed vlan 1-298,300-1005
+! switchport trunk encapsulation dot1q
+! switchport mode trunk
+! switchport nonegotiate
+!
+!interface FastEthernet0/1
+! ip dhcp snooping trust
+! switchport trunk native vlan 254
+! switchport trunk allowed vlan 1-298,300-1005
+! switchport trunk encapsulation dot1q
+! switchport mode trunk
+! switchport nonegotiate
+! channel-group 1 mode desirable
+!
+!interface FastEthernet0/2
+! ip dhcp snooping trust
+! switchport trunk native vlan 254
+! switchport trunk allowed vlan 1-298,300-1005
+! switchport trunk encapsulation dot1q
+! switchport mode trunk
+! switchport nonegotiate
+! channel-group 1 mode desirable
+!
+!interface FastEthernet0/3
+! ip dhcp snooping trust
+! switchport trunk native vlan 254
+! switchport trunk allowed vlan 1-298,300-1005
+! switchport trunk encapsulation dot1q
+! switchport mode trunk
+! switchport nonegotiate
+! channel-group 2 mode desirable
+!
+!interface FastEthernet0/4
+! ip dhcp snooping trust
+! switchport trunk native vlan 254
+! switchport trunk allowed vlan 1-298,300-1005
+! switchport trunk encapsulation dot1q
+! switchport mode trunk
+! switchport nonegotiate
+! channel-group 2 mode desirable
+!
+!interface FastEthernet0/5
+! ip dhcp snooping trust
+! switchport trunk native vlan 254
+! switchport trunk allowed vlan 1-298,300-1005
+! switchport trunk encapsulation dot1q
+! switchport mode trunk
+! switchport nonegotiate
+! channel-group 3 mode desirable
+!
+!interface FastEthernet0/6
+! ip dhcp snooping trust
+! switchport trunk native vlan 254
+! switchport trunk allowed vlan 1-298,300-1005
+! switchport trunk encapsulation dot1q
+! switchport mode trunk
+! switchport nonegotiate
+! channel-group 3 mode desirable
+!
+interface FastEthernet0/7
+ switchport access vlan 299
+ shutdown
+!
+interface FastEthernet0/8
+ switchport access vlan 299
+ shutdown
+!
+interface FastEthernet0/9
+ switchport access vlan 299
+ shutdown
+!
+interface FastEthernet0/10
+ switchport access vlan 299
+ shutdown
+!
+interface FastEthernet0/11
+ switchport access vlan 299
+ shutdown
+!
+interface FastEthernet0/12
+ switchport access vlan 299
+ shutdown
+!
+interface FastEthernet0/13
+ switchport access vlan 299
+ shutdown
+!
+interface FastEthernet0/14
+ switchport access vlan 299
+ shutdown
+!
+interface FastEthernet0/15
+ switchport access vlan 299
+ shutdown
+!
+interface FastEthernet0/16
+ switchport access vlan 299
+ shutdown
+!
+interface FastEthernet0/17
+ switchport access vlan 299
+ shutdown
+!
+interface FastEthernet0/18
+ switchport access vlan 299
+ shutdown
+!
+interface FastEthernet0/19
+ switchport access vlan 299
+ shutdown
+!
+interface FastEthernet0/20
+ switchport access vlan 299
+ shutdown
+!
+interface FastEthernet0/21
+ switchport access vlan 299
+ shutdown
+!
+interface FastEthernet0/22
+ switchport access vlan 299
+ shutdown
+!
+interface FastEthernet0/23
+ switchport access vlan 299
+ shutdown
+!
+interface FastEthernet0/24
+ switchport access vlan 299
+ shutdown
+!
+!interface GigabitEthernet0/1
+! no switchport
+! ip address 43.69.202.38 255.255.255.252
+! ip ospf message-digest-key 1 md5 cisco
+! ip ospf hello-interval 6
+! duplex auto
+! speed auto
+!
+interface GigabitEthernet0/2
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+! Vlans estão incorretas
+interface Vlan10
+ ip address 172.22.9.254 255.255.254.0
+! standby version 2
+! standby 0 preempt
+! standby 1 ip 172.22.8.10
+! standby 1 priority 200
+! standby 1 preempt
+!
+interface Vlan11
+ ip address 172.22.11.254 255.255.254.0
+! standby version 2
+! standby 1 ip 172.22.10.10
+! standby 1 priority 200
+! standby 1 preempt
+! standby 0 preempt
+!
+interface Vlan100
+ ip address 172.22.5.254 255.255.254.0
+! ip helper-address 172.22.10.1
+! ip access-group 1 out
+! standby version 2
+! standby 1 ip 172.22.4.10
+! standby 1 preempt
+! standby 0 preempt
+!
+interface Vlan101
+ ip address 172.22.7.254 255.255.254.0
+! ip helper-address 172.22.10.1
+! ip access-group 1 out
+! standby version 2
+! standby 1 ip 172.22.6.10
+! standby 1 preempt
+! standby 0 preempt
+!
+interface Vlan200
+ ip address 172.22.3.254 255.255.252.0
+! ip helper-address 172.22.10.1
+! standby version 2
+! standby 0 preempt
+! standby 1 ip 172.22.0.10
+!
+interface Vlan255
+ ip address 172.22.48.5 255.255.255.224
+! ip access-group 1 out
+! standby version 2
+! standby 1 ip 172.22.48.30
+! standby 1 preempt
+!
+!
+ip classless
+ip route 0.0.0.0 0.0.0.0 172.19.7.1
+!
+ip flow-export version 9
+!
+!
+!access-list 1 permit 43.69.202.36 0.0.0.3
+!access-list 1 permit 172.22.0.0 0.0.15.255
+!access-list 1 permit 172.22.20.0 0.0.0.255
+!access-list 1 deny any
+!
+banner login #Efetue um backup de seguranca antes de efetuar alteracoes#
+!
+!
+!
+!
+!
+line con 0
+ login local
+!
+line aux 0
+!
+line vty 0 4
+ login local
+ transport input ssh
+line vty 5 15
+ login local
+ transport input ssh
+!
+!
+!
+ntp server 172.19.7.1
+!
+end
