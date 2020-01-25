@@ -1,0 +1,35 @@
+! Corram em todos os dispositivos com Vlans
+! Estes comandos não aparecem na Running Config, para checkar, usem 'sh vlan brief'
+!
+!
+vlan 10
+ name External_Servers
+!
+vlan 11
+ name Internal_Servers
+!
+vlan 100
+ name Engineering
+!
+vlan 101
+ name Administration
+!
+vlan 200
+ name Voice
+!
+vlan 201
+ name Wireless
+!
+vlan 202
+ name Wireless-Guest
+!
+vlan 254
+ name Native
+!
+vlan 255
+ name Management
+!
+vlan 299
+ name BlackHole
+!
+end
