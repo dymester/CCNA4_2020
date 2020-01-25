@@ -107,47 +107,37 @@ interface Serial0/0/1
  clock rate 2000000
  shutdown
 !
-interface Serial0/1/0
- no ip address
- clock rate 2000000
- shutdown
-!
-interface Serial0/1/1
- no ip address
- clock rate 2000000
- shutdown
-!
 interface Vlan1
  no ip address
  shutdown
 !
-router eigrp 100
- eigrp router-id 2.2.2.2
- redistribute static metric 10000 0 255 1 1500
- passive-interface GigabitEthernet0/0
- passive-interface Loopback0
- passive-interface Loopback1
- passive-interface Loopback2
- network 56.16.20.212 0.0.0.3
- network 127.22.24.0 0.0.7.255
+!router eigrp 100
+! eigrp router-id 2.2.2.2
+! redistribute static metric 10000 0 255 1 1500
+! passive-interface GigabitEthernet0/0
+! passive-interface Loopback0
+! passive-interface Loopback1
+! passive-interface Loopback2
+! network 56.16.20.212 0.0.0.3
+! network 127.22.24.0 0.0.7.255
 
 !
 ip classless
-ip route 0.0.0.0 0.0.0.0 87.45.123.76 100
+!ip route 0.0.0.0 0.0.0.0 87.45.123.76 100
 !
 ip flow-export version 9
 !
 !
-access-list 10 deny 172.22.0.0 0.0.3.255
-access-list 10 deny 172.22.22.0 0.0.0.127
-access-list 10 deny 172.22.32.0 0.0.3.255
-access-list 10 deny 172.22.25.0 0.0.0.255
-access-list 10 permit any
+!access-list 10 deny 172.22.0.0 0.0.3.255
+!access-list 10 deny 172.22.22.0 0.0.0.127
+!access-list 10 deny 172.22.32.0 0.0.3.255
+!access-list 10 deny 172.22.25.0 0.0.0.255
+!access-list 10 permit any
 !
 no cdp run
 !
-banner login ^CEfetue um backup de seguranca antes de efetuar alteracoes^^C
-banner motd ^CAcesso Restrito a Utilizadores Autorizados^^C
+banner login #Efetue um backup de seguranca antes de efetuar alteracoes#
+banner motd #CAcesso Restrito a Utilizadores Autorizados#
 !
 !
 !
@@ -166,6 +156,6 @@ line vty 5 15
  transport input ssh
 !
 !
-ntp server 63.49.54.21
+!ntp server 63.49.54.21
 !
 end
