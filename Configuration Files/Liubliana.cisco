@@ -95,6 +95,7 @@ interface GigabitEthernet0/0
  ip address 63.49.54.22 255.255.255.252
  duplex auto
  speed 100000
+ bandwidth 1000000
  no shutdown
 !
 interface GigabitEthernet0/1
@@ -113,11 +114,15 @@ interface GigabitEthernet0/2
 interface Serial0/0/0
  no ip address
  clock rate 2000000
+ speed 100000
+ bandwidth 1000000
  shutdown
 !
 interface Serial0/0/1
  no ip address
  clock rate 2000000
+ speed 100000
+ bandwidth 1000000
  shutdown
 !
 ! bandwidth 50000
@@ -190,7 +195,6 @@ line vty 5 15
  login local
  transport input ssh
 !
-! NTP NOT DONE
-!ntp server 63.49.54.21
+ntp server 63.49.54.21
 !
 end

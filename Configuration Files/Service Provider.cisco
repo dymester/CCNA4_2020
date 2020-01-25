@@ -1,10 +1,10 @@
----------------------------VIENNA-------------------------------
+---------------------------Service Provider-------------------------------
 version 15.1
 no service timestamps log datetime msec
 no service timestamps debug datetime msec
 service password-encryption
 !
-hostname ViennaHQ
+hostname ServiceProvider
 !
 !
 !
@@ -50,23 +50,23 @@ spanning-tree mode pvst
 !
 !
 !
-!IPv6 ??
+! Não me lembro se o Gig0/0 está ligado ao Budapest ou ao Liubliana, usei Liubliana
 interface GigabitEthernet0/0
- ip address dhcp
- ip access-group 10 out
- ip nat outside
+ ip address 63.49.54.22 255.255.255.252
  duplex auto
- speed auto
+ speed 100000
+ bandwidth 1000000
+ no shutdown
 ! ipv6 address 2001::1/64
 !
+!
+! Não me lembro se o Gig0/1 está ligado ao Budapest ou ao Liubliana, usei Budapest
 interface GigabitEthernet0/1
- ip address 43.69.202.37 255.255.255.252
-! ip ospf message-digest-key 1 md5 cisco
-! ip ospf hello-interval 6
-! ip ospf 1 area 0
- ip nat inside
+ ip address 209.165.200.98 255.255.255.252
  duplex auto
- speed auto
+ speed 100000
+ bandwidth 1000000
+ no shutdown
 !
 interface GigabitEthernet0/2
  no ip address
@@ -75,7 +75,8 @@ interface GigabitEthernet0/2
  shutdown
 !
 interface Serial0/0/0
- bandwidth 100000
+ speed 100000
+ bandwidth 1000000
  ip address 193.136.60.106 255.255.255.252
 ! ip ospf message-digest-key 1 md5 cisco
 ! ip ospf cost 20
@@ -96,29 +97,10 @@ interface Vlan1
  no ip address
  shutdown
 !
-!router ospf 1
-! router-id 1.1.1.1
-! log-adjacency-changes
-! area 0 authentication message-digest
-! passive-interface GigabitEthernet0/0
-! network 63.49.54.20 0.0.0.3 area 0
-! network 193.136.60.104 0.0.0.3 area 0
-! network 43.69.202.36 0.0.0.3 area 0
-! network 172.22.0.0 0.0.15.255 area 1
-! default-information originate
-!
-!ip nat inside source static 172.22.8.1 209.100.100.5
 ip classless
-!ip route 0.0.0.0 0.0.0.0 25.76.98.13
 !
 ip flow-export version 9
 !
-!
-!access-list 10 deny 172.22.0.0 0.0.3.255
-!access-list 10 deny 172.22.22.0 0.0.0.127
-!access-list 10 deny 172.22.32.0 0.0.3.255
-!access-list 10 deny 172.22.25.0 0.0.0.255
-!access-list 10 permit any
 !
 no cdp run
 !
@@ -142,7 +124,5 @@ line vty 5 15
  transport input ssh
 !
 !
-ntp master
-ntp update-calendar
 !
 end

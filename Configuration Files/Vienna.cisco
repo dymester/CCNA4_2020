@@ -1,0 +1,150 @@
+---------------------------VIENNA-------------------------------
+version 15.1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+service password-encryption
+!
+hostname ViennaHQ
+!
+!
+!
+!
+!
+!
+!
+!
+no ip cef
+ipv6 unicast-routing
+!
+no ipv6 cef
+!
+!
+!
+username cisco privilege 15 secret 5 $1$mERr$9cTjUIEqNGurQiFU.ZeCi1
+!
+!
+license udi pid CISCO2911/K9 sn FTX15249R0Q-
+!
+!
+!
+ip domain-name cisco.com
+!
+ip host Vienna 193.136.60.106
+ip host Budapest 209.165.200.98
+ip host Liubliana 63.49.54.22
+ip host Bratislava 56.16.20.214
+ip host ServiceProvider 193.136.60.107
+ip host MLS1 172.19.7.2
+ip host MLS2 172.19.7.3
+ip host SW1 172.19.7.4
+ip host SW2 172.19.7.5
+ip host HTTP 172.19.7.6
+ip host DHCP 172.19.7.7
+ip host AP1 172.19.7.8
+ip host AP2 172.19.7.9
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!IPv6 ??
+interface GigabitEthernet0/0
+ ip address dhcp
+ ip access-group 10 out
+ ip nat outside
+ duplex auto
+ speed auto
+! ipv6 address 2001::1/64
+!
+interface GigabitEthernet0/1
+ ip address 43.69.202.37 255.255.255.252
+! ip ospf message-digest-key 1 md5 cisco
+! ip ospf hello-interval 6
+! ip ospf 1 area 0
+ ip nat inside
+ duplex auto
+ speed 100000
+ bandwidth 1000000
+!
+interface GigabitEthernet0/2
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface Serial0/0/0
+ speed 100000
+ bandwidth 1000000
+ ip address 193.136.60.106 255.255.255.252
+! ip ospf message-digest-key 1 md5 cisco
+! ip ospf cost 20
+! ip ospf hello-interval 6
+! ip nat inside
+!
+interface Serial0/0/1
+ no ip address
+ clock rate 2000000
+ shutdown
+!
+interface Serial0/1/0
+ no ip address
+ clock rate 2000000
+ shutdown
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+!router ospf 1
+! router-id 1.1.1.1
+! log-adjacency-changes
+! area 0 authentication message-digest
+! passive-interface GigabitEthernet0/0
+! network 63.49.54.20 0.0.0.3 area 0
+! network 193.136.60.104 0.0.0.3 area 0
+! network 43.69.202.36 0.0.0.3 area 0
+! network 172.22.0.0 0.0.15.255 area 1
+! default-information originate
+!
+!ip nat inside source static 172.22.8.1 209.100.100.5
+ip classless
+!ip route 0.0.0.0 0.0.0.0 25.76.98.13
+!
+ip flow-export version 9
+!
+!
+!access-list 10 deny 172.22.0.0 0.0.3.255
+!access-list 10 deny 172.22.22.0 0.0.0.127
+!access-list 10 deny 172.22.32.0 0.0.3.255
+!access-list 10 deny 172.22.25.0 0.0.0.255
+!access-list 10 permit any
+!
+no cdp run
+!
+banner login #Efetue um backup de seguranca antes de efetuar alteracoes#
+banner motd #Acesso Restrito a Utilizadores Autorizados#
+!
+!
+!
+!
+!
+line con 0
+ login local
+!
+line aux 0
+!
+line vty 0 4
+ login local
+ transport input ssh
+line vty 5 15
+ login local
+ transport input ssh
+!
+!
+ntp master
+ntp update-calendar
+!
+end

@@ -101,6 +101,7 @@ interface GigabitEthernet0/0
  !IPV6 MISSING
  duplex auto
  speed 100000
+ bandwidth 1000000
  no shutdown
 !
 interface GigabitEthernet0/1
@@ -110,7 +111,8 @@ interface GigabitEthernet0/1
  shutdown
 !
 interface Serial0/0/0
- bandwidth 100000
+ speed 100000
+ bandwidth 1000000
  ip address 193.136.60.105 255.255.255.252
  ip ospf message-digest-key 1 md5 cisco
  ip ospf hello-interval 6
