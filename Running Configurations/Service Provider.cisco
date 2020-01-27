@@ -1,0 +1,139 @@
+---------------------------Service Provider-------------------------------
+--------------------------Service Provider-------------------------------
+version 15.1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+service password-encryption
+!
+hostname ServiceProvider
+!
+enable secret 5 $1$Pdb4$c6.xFo5g6EYs4NyCwS615.
+!
+!
+!
+!
+!
+!
+no ip cef
+ipv6 unicast-routing
+!
+no ipv6 cef
+!
+!
+!
+username cisco privilege 15 secret 5 $1$mERr$9cTjUIEqNGurQiFU.ZeCi1
+!
+!
+license udi pid CISCO2911/K9 sn FTX15249R0Q-
+!
+!
+!
+ip domain-name cisco.com
+!
+ip host Vienna 193.136.60.106
+ip host Budapest 209.165.200.98
+ip host Liubliana 63.49.54.22
+ip host Bratislava 56.16.20.214
+ip host ServiceProvider 193.136.60.107
+ip host MLS1 172.19.7.2
+ip host MLS2 172.19.7.3
+ip host SW1 172.19.7.4
+ip host SW2 172.19.7.5
+ip host HTTP 172.19.7.6
+ip host DHCP 172.19.7.7
+ip host AP1 172.19.7.8
+ip host AP2 172.19.7.9
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+! Não me lembro se o Gig0/0 está ligado ao Budapest ou ao Liubliana, usei Liubliana
+interface GigabitEthernet0/0
+ ip address 63.49.54.22 255.255.255.252
+ duplex auto
+ bandwidth 1000000
+ no shutdown
+! ipv6 address 2001::1/64
+!
+!
+! Não me lembro se o Gig0/1 está ligado ao Budapest ou ao Liubliana, usei Budapest
+interface GigabitEthernet0/1
+ ip address 209.165.200.98 255.255.255.252
+ duplex auto
+ bandwidth 1000000
+ no shutdown
+!
+interface GigabitEthernet0/2
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface Serial0/0/0
+ bandwidth 1000000
+ ip address 193.136.60.106 255.255.255.252
+! ip ospf message-digest-key 1 md5 cisco
+! ip ospf cost 20
+! ip ospf hello-interval 6
+! ip nat inside
+!
+interface Serial0/0/1
+ no ip address
+ clock rate 2000000
+ shutdown
+!
+interface Serial0/1/0
+ no ip address
+ clock rate 2000000
+ shutdown
+!
+router bgp 60000
+network 193.136.60.104 mask 255.255.255.252
+network 209.165.200.96 mask 255.255.255.252
+network 63.49.54.20 mask 255.255.255.252
+neighbor 193.136.60.105 remote-as 60001
+neighbor 209.165.200.97 remote-as 60002
+neighbor 63.54.49.21 remote-as 60003
+!
+alias exec r1 ssh -l cisco Vienna
+alias exec r2 ssh -l cisco Liubliana
+alias exec r3 ssh -l cisco Budapest
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+ip classless
+!
+ip flow-export version 9
+!
+!
+no cdp run
+!
+banner login #Efetue um backup de seguranca antes de efetuar alteracoes#
+banner motd #Acesso Restrito a Utilizadores Autorizados#
+!
+!
+!
+!
+!
+line con 0
+ login local
+!
+line aux 0
+!
+line vty 0 4
+ login local
+ transport input ssh
+line vty 5 15
+ login local
+ transport input ssh
+!
+!
+crypto key generate rsa modulus 1024 exportable
+!
+end
