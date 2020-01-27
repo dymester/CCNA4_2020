@@ -3,7 +3,7 @@ service timestamps debug datetime msec
 service timestamps log datetime msec
 service password-encryption
 !
-hostname Liubliana
+hostname LiublianaBranch
 !
 boot-start-marker
 boot-end-marker
@@ -27,13 +27,13 @@ ip host Vienna 193.136.60.106
 ip host Budapest 209.165.200.98
 ip host Liubliana 63.49.54.22
 ip host Bratislava 56.16.20.214
-ip host ServiceProvider 63.49.54.23
+ip host ServiceProvider 63.49.54.21
 ip host MLS1 172.19.7.2
 ip host MLS2 172.19.7.3
 ip host SW1 172.19.7.4
 ip host SW2 172.19.7.5
-ip host HTTP 172.19.7.6
-ip host DHCP 172.19.7.7
+!ip host HTTP 172.19.7.6
+!ip host DHCP 172.19.7.7
 ip host AP1 172.19.7.8
 ip host AP2 172.19.7.9
 no ipv6 cef
@@ -58,6 +58,9 @@ crypto pki token default removal timeout 0
 !
 !
 license udi pid CISCO2851 sn FTX1248A0PT
+!
+crypto key generate rsa modulus 1024 exportable
+!
 username cisco privilege 15 secret 5 $1$mERr$9cTjUIEqNGurQiFU.ZeCi1
 username bratislava password 7 13061B13181F
 !
@@ -123,7 +126,6 @@ interface GigabitEthernet0/0
  bandwidth 1000000
  ip address 63.49.54.22 255.255.255.252
  duplex auto
- speed 100
 !
 interface GigabitEthernet0/1
  no ip address
