@@ -3,7 +3,7 @@ service timestamps debug datetime msec
 service timestamps log datetime msec
 service password-encryption
 !
-hostname Vienna
+hostname ViennaHQ
 !
 boot-start-marker
 boot-end-marker
@@ -36,8 +36,8 @@ ip host MLS1 172.19.7.2
 ip host MLS2 172.19.7.3
 ip host SW1 172.19.7.4
 ip host SW2 172.19.7.5
-ip host HTTP 172.19.7.6
-ip host DHCP 172.19.7.7
+!ip host HTTP 172.19.7.6
+!ip host DHCP 172.19.7.7
 ip host AP1 172.19.7.8
 ip host AP2 172.19.7.9
 ip cef
@@ -67,6 +67,8 @@ license accept end user agreement
 license boot module c2900 technology-package securityk9
 license boot module c2900 technology-package uck9
 !
+!
+crypto key generate rsa modulus 1024 exportable
 !
 username cisco privilege 15 secret 5 $1$mERr$9cTjUIEqNGurQiFU.ZeCi1
 !
@@ -100,7 +102,6 @@ interface GigabitEthernet0/0
  ip address 172.19.7.1 255.255.255.240
  duplex auto
  speed auto
- ipv6 address 2001::1/64
 !
 interface GigabitEthernet0/1
  ip address 172.19.7.21 255.255.255.252
@@ -108,8 +109,8 @@ interface GigabitEthernet0/1
  speed auto
 !
 interface GigabitEthernet0/2
- no ip address
- shutdown
+ ip dhcp
+ ipv6 address 2001::1/64
  duplex auto
  speed auto
 !
@@ -131,7 +132,7 @@ ip forward-protocol nd
 no ip http server
 no ip http secure-server
 !
-ip route 0.0.0.0 0.0.0.0 GigabitEthernet0/0
+ip route 0.0.0.0 0.0.0.0 GigabitEthernet0/2
 !
 !
 !
