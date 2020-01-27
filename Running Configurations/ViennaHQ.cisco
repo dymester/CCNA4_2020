@@ -31,7 +31,7 @@ ip host Vienna 193.136.60.106
 ip host Budapest 209.165.200.98
 ip host Liubliana 63.49.54.22
 ip host Bratislava 56.16.20.214
-ip host ServiceProvider 193.136.60.107
+ip host ServiceProvider 209.165.200.97
 ip host MLS1 172.19.7.2
 ip host MLS2 172.19.7.3
 ip host SW1 172.19.7.4
