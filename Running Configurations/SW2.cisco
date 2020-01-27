@@ -4,7 +4,7 @@ service timestamps debug datetime msec
 service timestamps log datetime msec
 service password-encryption
 !
-hostname ViennaMLS2
+hostname SW2
 !
 boot-start-marker
 boot-end-marker
@@ -16,6 +16,7 @@ system mtu routing 1500
 !
 !
 ip domain-name cisco.com
+ip host Vienna 172.19.7.1
 ip host AP2 172.19.7.9
 ip host AP1 172.19.7.8
 ip host DHCP 172.19.7.7
@@ -24,11 +25,10 @@ ip host SW2 172.19.7.5
 ip host SW1 172.19.7.4
 ip host MLS2 172.19.7.3
 ip host MLS1 172.19.7.2
-ip host ServiceProvider 209.165.200.99
+ip host ServiceProvider 63.49.54.23
 ip host Bratislava 56.16.20.214
-ip host Liubliana 63.49.54.22
+ip host Liubliana 56.16.20.213
 ip host Budapest 209.165.200.98
-ip host Vienna 172.19.7.1
 !
 !
 !
@@ -47,7 +47,7 @@ vlan internal allocation policy ascending
 !
 !
 !
-interface Port-channel1
+interface Port-channel3
  switchport trunk native vlan 254
  switchport trunk allowed vlan 1-298,300-1005
  switchport mode trunk
@@ -59,29 +59,33 @@ interface Port-channel4
  switchport mode trunk
  switchport nonegotiate
 !
-interface Port-channel5
- switchport trunk native vlan 254
- switchport trunk allowed vlan 1-298,300-1005
- switchport mode trunk
- switchport nonegotiate
-!
 interface FastEthernet0/1
  switchport trunk native vlan 254
  switchport trunk allowed vlan 1-298,300-1005
  switchport mode trunk
  switchport nonegotiate
- channel-group 1 mode desirable
+ channel-group 3 mode desirable
 !
 interface FastEthernet0/2
  switchport trunk native vlan 254
  switchport trunk allowed vlan 1-298,300-1005
  switchport mode trunk
  switchport nonegotiate
- channel-group 1 mode desirable
+ channel-group 3 mode desirable
 !
 interface FastEthernet0/3
+ switchport trunk native vlan 254
+ switchport trunk allowed vlan 1-298,300-1005
+ switchport mode trunk
+ switchport nonegotiate
+ channel-group 4 mode desirable
 !
 interface FastEthernet0/4
+ switchport trunk native vlan 254
+ switchport trunk allowed vlan 1-298,300-1005
+ switchport mode trunk
+ switchport nonegotiate
+ channel-group 4 mode desirable
 !
 interface FastEthernet0/5
 !
@@ -116,32 +120,12 @@ interface FastEthernet0/19
 interface FastEthernet0/20
 !
 interface FastEthernet0/21
- switchport trunk native vlan 254
- switchport trunk allowed vlan 1-298,300-1005
- switchport mode trunk
- switchport nonegotiate
- channel-group 5 mode desirable
 !
 interface FastEthernet0/22
- switchport trunk native vlan 254
- switchport trunk allowed vlan 1-298,300-1005
- switchport mode trunk
- switchport nonegotiate
- channel-group 5 mode desirable
 !
 interface FastEthernet0/23
- switchport trunk native vlan 254
- switchport trunk allowed vlan 1-298,300-1005
- switchport mode trunk
- switchport nonegotiate
- channel-group 4 mode desirable
 !
 interface FastEthernet0/24
- switchport trunk native vlan 254
- switchport trunk allowed vlan 1-298,300-1005
- switchport mode trunk
- switchport nonegotiate
- channel-group 4 mode desirable
 !
 interface GigabitEthernet0/1
 !
@@ -149,15 +133,17 @@ interface GigabitEthernet0/2
 !
 interface Vlan1
  no ip address
+ shutdown
 !
 interface Vlan255
- ip address 172.19.7.3 255.255.255.240
+ ip address 172.19.7.5 255.255.255.240
 !
 ip http server
 ip http secure-server
 !
 vstack
 banner login ^CEfetue um backup de seguranca antes de efetuar alteracoes^C
+banner motd ^CCAcesso Restrito a Utilizadores Autorizados^C
 !
 line con 0
  login local
@@ -168,5 +154,5 @@ line vty 5 15
  login local
  transport input ssh
 !
-ntp server 172.19.7.1
+ntp server 193.136.60.106
 end
