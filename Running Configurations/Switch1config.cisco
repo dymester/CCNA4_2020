@@ -1,0 +1,158 @@
+version 15.0
+no service pad
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname SW1
+!
+boot-start-marker
+boot-end-marker
+!
+!
+username cisco privilege 15 secret 5 $1$mERr$9cTjUIEqNGurQiFU.ZeCi1
+no aaa new-model
+system mtu routing 1500
+!
+!
+ip domain-name cisco.com
+ip host Vienna 172.19.7.1
+ip host AP2 172.19.7.9
+ip host AP1 172.19.7.8
+ip host DHCP 172.19.7.7
+ip host HTTP 172.19.7.6
+ip host SW2 172.19.7.5
+ip host SW1 172.19.7.4
+ip host MLS2 172.19.7.3
+ip host MLS1 172.19.7.2
+ip host ServiceProvider 63.49.54.23
+ip host Bratislava 56.16.20.214
+ip host Liubliana 56.16.20.213
+ip host Budapest 209.165.200.98
+!
+!
+!
+!
+!
+!
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+!
+!
+!
+!
+!
+interface Port-channel2
+ switchport trunk native vlan 254
+ switchport trunk allowed vlan 1-298,300-1005
+ switchport mode trunk
+ switchport nonegotiate
+!
+interface Port-channel5
+ switchport trunk native vlan 254
+ switchport trunk allowed vlan 1-298,300-1005
+ switchport mode trunk
+ switchport nonegotiate
+!
+interface FastEthernet0/1
+ switchport trunk native vlan 254
+ switchport trunk allowed vlan 1-298,300-1005
+ switchport mode trunk
+ switchport nonegotiate
+ channel-group 2 mode desirable
+!
+interface FastEthernet0/2
+ switchport trunk native vlan 254
+ switchport trunk allowed vlan 1-298,300-1005
+ switchport mode trunk
+ switchport nonegotiate
+ channel-group 2 mode desirable
+!
+interface FastEthernet0/3
+ switchport trunk native vlan 254
+ switchport trunk allowed vlan 1-298,300-1005
+ switchport mode trunk
+ switchport nonegotiate
+ channel-group 5 mode desirable
+!
+interface FastEthernet0/4
+ switchport trunk native vlan 254
+ switchport trunk allowed vlan 1-298,300-1005
+ switchport mode trunk
+ switchport nonegotiate
+ channel-group 5 mode desirable
+!
+interface FastEthernet0/5
+!
+interface FastEthernet0/6
+!
+interface FastEthernet0/7
+!
+interface FastEthernet0/8
+!
+interface FastEthernet0/9
+!
+interface FastEthernet0/10
+!
+interface FastEthernet0/11
+!
+interface FastEthernet0/12
+!
+interface FastEthernet0/13
+!
+interface FastEthernet0/14
+!
+interface FastEthernet0/15
+!
+interface FastEthernet0/16
+!
+interface FastEthernet0/17
+!
+interface FastEthernet0/18
+!
+interface FastEthernet0/19
+!
+interface FastEthernet0/20
+!
+interface FastEthernet0/21
+!
+interface FastEthernet0/22
+!
+interface FastEthernet0/23
+!
+interface FastEthernet0/24
+!
+interface GigabitEthernet0/1
+!
+interface GigabitEthernet0/2
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+interface Vlan255
+ ip address 172.19.7.4 255.255.255.240
+!
+ip http server
+ip http secure-server
+!
+vstack
+banner login ^CEfetue um backup de seguranca antes de efetuar alteracoes^C
+banner motd ^CCAcesso Restrito a Utilizadores Autorizados^C
+!
+line con 0
+ login local
+line vty 0 4
+ login local
+ transport input ssh
+line vty 5 15
+ login local
+ transport input ssh
+!
+ntp server 193.136.60.106
+end
