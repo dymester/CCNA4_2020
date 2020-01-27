@@ -1,0 +1,191 @@
+version 15.1
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname Liubliana
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+!
+memory-size iomem 5
+!
+dot11 syslog
+ip source-route
+!
+!
+ip cef
+!
+!
+!
+ip domain name cisco.com
+ip host Vienna 193.136.60.106
+ip host Budapest 209.165.200.98
+ip host Liubliana 63.49.54.22
+ip host Bratislava 56.16.20.214
+ip host ServiceProvider 63.49.54.23
+ip host MLS1 172.19.7.2
+ip host MLS2 172.19.7.3
+ip host SW1 172.19.7.4
+ip host SW2 172.19.7.5
+ip host HTTP 172.19.7.6
+ip host DHCP 172.19.7.7
+ip host AP1 172.19.7.8
+ip host AP2 172.19.7.9
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+voice-card 0
+!
+crypto pki token default removal timeout 0
+!
+!
+!
+!
+license udi pid CISCO2851 sn FTX1248A0PT
+username cisco privilege 15 secret 5 $1$mERr$9cTjUIEqNGurQiFU.ZeCi1
+username bratislava password 7 13061B13181F
+!
+redundancy
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 172.19.18.1 255.255.255.0
+ ipv6 address 1000:0:0:20::1/64
+!
+interface Loopback1
+ ip address 172.19.23.1 255.255.255.0
+ ipv6 address 1000:0:0:21::1/64
+!
+interface Loopback2
+ ip address 172.19.19.1 255.255.255.0
+ ipv6 address 1000:0:0:22::1/64
+!
+interface Loopback3
+ ip address 172.19.16.1 255.255.254.0
+ ipv6 address 1000:0:0:23::1/64
+!
+interface Loopback4
+ ip address 172.19.20.1 255.255.255.0
+ ipv6 address 1000:0:0:24::1/64
+!
+interface Loopback5
+ ip address 172.19.24.1 255.255.255.128
+ ipv6 address 1000:0:0:25::1/64
+!
+interface Loopback6
+ ip address 172.19.21.1 255.255.255.0
+ ipv6 address 1000:0:0:26::1/64
+!
+interface Loopback7
+ ip address 172.19.22.1 255.255.255.0
+ ipv6 address 1000:0:0:27::1/64
+!
+interface Tunnel0
+ ip address 10.0.0.3 255.255.255.0
+ ip mtu 1400
+ ip tcp adjust-mss 1360
+ tunnel source 2.2.2.2
+ tunnel destination 1.1.1.1
+!
+interface Multilink1
+ ip address 56.16.20.213 255.255.255.252
+ compress predictor
+ ppp quality 80
+ ppp authentication chap
+ ppp multilink
+ ppp multilink group 1
+!
+interface GigabitEthernet0/0
+ bandwidth 1000000
+ ip address 63.49.54.22 255.255.255.252
+ duplex auto
+ speed 100
+!
+interface GigabitEthernet0/1
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+!
+interface Serial0/0/0
+ no ip address
+ encapsulation ppp
+ ppp multilink
+ ppp multilink group 1
+ clock rate 2000000
+!
+interface Serial0/0/1
+ no ip address
+ encapsulation ppp
+ ppp multilink
+ ppp multilink group 1
+!
+router bgp 60003
+ bgp log-neighbor-changes
+ network 56.16.20.212 mask 255.255.255.252
+ network 192.19.16.0 mask 255.255.240.0
+ neighbor 63.49.54.21 remote-as 60000
+!
+ip forward-protocol nd
+no ip http server
+no ip http secure-server
+!
+!
+!
+!
+!
+!
+!
+!
+!
+control-plane
+!
+!
+!
+!
+mgcp profile default
+!
+!
+!
+!
+!
+banner login ^CEfetue um backup de seguranca antes de efetuar alteracoes^C
+banner motd ^CAcesso Restrito a Utilizadores Autorizados^C
+!
+line con 0
+ login local
+line aux 0
+line vty 0 4
+ login local
+ transport input ssh
+line vty 5 15
+ login local
+ transport input ssh
+!
+scheduler allocate 20000 1000
+end
+
