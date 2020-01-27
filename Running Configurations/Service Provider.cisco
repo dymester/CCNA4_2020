@@ -7,8 +7,6 @@ service password-encryption
 !
 hostname ServiceProvider
 !
-enable secret 5 $1$Pdb4$c6.xFo5g6EYs4NyCwS615.
-!
 !
 !
 !
@@ -39,8 +37,8 @@ ip host MLS1 172.19.7.2
 ip host MLS2 172.19.7.3
 ip host SW1 172.19.7.4
 ip host SW2 172.19.7.5
-ip host HTTP 172.19.7.6
-ip host DHCP 172.19.7.7
+!ip host HTTP 172.19.7.6
+!ip host DHCP 172.19.7.7
 ip host AP1 172.19.7.8
 ip host AP2 172.19.7.9
 !
@@ -50,19 +48,15 @@ spanning-tree mode pvst
 !
 !
 !
-!
-! Não me lembro se o Gig0/0 está ligado ao Budapest ou ao Liubliana, usei Liubliana
 interface GigabitEthernet0/0
- ip address 63.49.54.22 255.255.255.252
+ ip address 209.165.200.98 255.255.255.252
  duplex auto
  bandwidth 1000000
  no shutdown
-! ipv6 address 2001::1/64
 !
 !
-! Não me lembro se o Gig0/1 está ligado ao Budapest ou ao Liubliana, usei Budapest
 interface GigabitEthernet0/1
- ip address 209.165.200.98 255.255.255.252
+ ip address 63.49.54.22 255.255.255.252
  duplex auto
  bandwidth 1000000
  no shutdown
@@ -95,9 +89,9 @@ router bgp 60000
 network 193.136.60.104 mask 255.255.255.252
 network 209.165.200.96 mask 255.255.255.252
 network 63.49.54.20 mask 255.255.255.252
-neighbor 193.136.60.105 remote-as 60001
-neighbor 209.165.200.97 remote-as 60002
-neighbor 63.54.49.21 remote-as 60003
+neighbor 193.136.60.106 remote-as 60001
+neighbor 209.165.200.98 remote-as 60002
+neighbor 63.49.49.22 remote-as 60003
 !
 alias exec r1 ssh -l cisco Vienna
 alias exec r2 ssh -l cisco Liubliana
