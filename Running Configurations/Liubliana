@@ -123,23 +123,22 @@ interface Multilink1
  ppp multilink group 1
 !
 interface GigabitEthernet0/0
- bandwidth 1000000
- ip address 63.49.54.22 255.255.255.252
  duplex auto
- no shut
 !
 interface GigabitEthernet0/1
+ bandwidth 20000
+ ip address 63.49.54.22 255.255.255.252
  no ip address
  duplex auto
  speed auto
  no shut
 !
 interface Serial0/0/0
+ bandwidth 20000
  no ip address
  encapsulation ppp
  ppp multilink
  ppp multilink group 1
- clock rate 2000000
  no shut
 !
 interface Serial0/0/1
