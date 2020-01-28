@@ -1,288 +1,383 @@
 ------------------------MLS1--------------------
-version 12.2(37)SE1
-no service timestamps log datetime msec
-no service timestamps debug datetime msec
+version 16.3
+no service pad
+service timestamps debug datetime msec
+service timestamps log datetime msec
 service password-encryption
+no platform punt-keepalive disable-kernel-core
 !
 hostname ViennaMLS1
 !
 !
+vrf definition Mgmt-vrf
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+!
+no aaa new-model
+switch 1 provision ws-c3650-24ps
 !
 !
 !
 !
 ip routing
-ipv6 unicast-routing
 !
 !
+!
+ip host AP1 172.19.7.8
+ip host AP2 172.19.7.9
+ip host Bratislava 56.16.20.214
+ip host Budapest 209.165.200.98
+ip host DHCP 172.19.7.7
+ip host HTTP 172.19.7.6
+ip host Liubliana 63.49.54.22
+ip host MLS1 172.19.7.2
+ip host MLS2 172.19.7.3
+ip host ServiceProvider 209.165.200.99
+ip host SW1 172.19.7.4
+ip host SW2 172.19.7.5
+ip host Vienna 172.19.7.17
+ip domain name cisco.com
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+crypto pki trustpoint TP-self-signed-4153963974
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-4153963974
+ revocation-check none
+ rsakeypair TP-self-signed-4153963974
+!
+!
+crypto pki certificate chain TP-self-signed-4153963974
+!
+license boot level ipservicesk9
+diagnostic bootup level minimal
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
 !
 !
 username cisco privilege 15 secret 5 $1$mERr$9cTjUIEqNGurQiFU.ZeCi1
 !
-!
-ip domain-name cisco.com
-!
-ip host Vienna 172.19.7.1
-ip host Budapest 209.165.200.98
-ip host Liubliana 63.49.54.22
-ip host Bratislava 56.16.20.214
-ip host ServiceProvider 209.165.200.99
-ip host MLS1 172.19.7.2
-ip host MLS2 172.19.7.3
-ip host SW1 172.19.7.4
-ip host SW2 172.19.7.5
-ip host HTTP 172.19.7.6
-ip host DHCP 172.19.7.7
-ip host AP1 172.19.7.8
-ip host AP2 172.19.7.9
-!
-!
-!ip dhcp snooping vlan 100
-!no ip dhcp snooping information option
-!
-!ip domain-name cisco.com
-!
-!
-spanning-tree mode pvst
+redundancy
+ mode sso
 !
 !
 !
+class-map match-any system-cpp-police-topology-control
+  description Topology control
+class-map match-any system-cpp-police-sw-forward
+  description Sw forwarding, SGT Cache Full, LOGGING
+class-map match-any system-cpp-default
+  description DHCP snooping, show forward and rest of traffic
+class-map match-any system-cpp-police-sys-data
+  description Learning cache ovfl, Crypto Control, Exception, EGR Exception, NFL SAMPLED DATA, Gold Pkt, RPF Failed
+class-map match-any system-cpp-police-punt-webauth
+  description Punt Webauth
+class-map match-any system-cpp-police-forus
+  description Forus Address resolution and Forus traffic
+class-map match-any system-cpp-police-multicast-end-station
+  description MCAST END STATION
+class-map match-any system-cpp-police-multicast
+  description Transit Traffic and MCAST Data
+class-map match-any system-cpp-police-l2-control
+  description L2 control
+class-map match-any system-cpp-police-dot1x-auth
+  description DOT1X Auth
+class-map match-any system-cpp-police-data
+  description ICMP_GEN and BROADCAST
+class-map match-any system-cpp-police-control-low-priority
+  description ICMP redirect and general punt
+class-map match-any system-cpp-police-wireless-priority1
+  description Wireless priority 1
+class-map match-any system-cpp-police-wireless-priority2
+  description Wireless priority 2
+class-map match-any system-cpp-police-wireless-priority3-4-5
+  description Wireless priority 3,4 and 5
+class-map match-any non-client-nrt-class
+class-map match-any system-cpp-police-routing-control
+  description Routing control
+class-map match-any system-cpp-police-protocol-snooping
+  description Protocol snooping
 !
-!Não tinha as ligações físicas à minha frente, por isso não consegui fazer Port-Channel
+policy-map port_child_policy
+ class non-client-nrt-class
+  bandwidth remaining ratio 10
+policy-map system-cpp-policy
+ class system-cpp-police-data
+  police rate 200 pps
+ class system-cpp-police-sys-data
+  police rate 100 pps
+ class system-cpp-police-sw-forward
+  police rate 1000 pps
+ class system-cpp-police-multicast
+  police rate 500 pps
+ class system-cpp-police-multicast-end-station
+  police rate 2000 pps
+ class system-cpp-police-punt-webauth
+ class system-cpp-police-l2-control
+ class system-cpp-police-routing-control
+  police rate 1800 pps
+ class system-cpp-police-control-low-priority
+ class system-cpp-police-wireless-priority1
+ class system-cpp-police-wireless-priority2
+ class system-cpp-police-wireless-priority3-4-5
+ class system-cpp-police-topology-control
+ class system-cpp-police-dot1x-auth
+ class system-cpp-police-protocol-snooping
+ class system-cpp-police-forus
+ class system-cpp-default
 !
-!interface Port-channel1
-! switchport trunk native vlan 254
-! switchport trunk allowed vlan 1-298,300-1005
-! switchport trunk encapsulation dot1q
-! switchport mode trunk
-! switchport nonegotiate
 !
-!interface Port-channel2
-! switchport trunk native vlan 254
-! switchport trunk allowed vlan 1-298,300-1005
-! switchport trunk encapsulation dot1q
-! switchport mode trunk
-! switchport nonegotiate
 !
-!interface Port-channel3
-! switchport trunk native vlan 254
-! switchport trunk allowed vlan 1-298,300-1005
-! switchport trunk encapsulation dot1q
-! switchport mode trunk
-! switchport nonegotiate
 !
-!interface FastEthernet0/1
-! ip dhcp snooping trust
-! switchport trunk native vlan 254
-! switchport trunk allowed vlan 1-298,300-1005
-! switchport trunk encapsulation dot1q
-! switchport mode trunk
-! switchport nonegotiate
-! channel-group 1 mode desirable
 !
-!interface FastEthernet0/2
-! ip dhcp snooping trust
-! switchport trunk native vlan 254
-! switchport trunk allowed vlan 1-298,300-1005
-! switchport trunk encapsulation dot1q
-! switchport mode trunk
-! switchport nonegotiate
-! channel-group 1 mode desirable
 !
-!interface FastEthernet0/3
-! ip dhcp snooping trust
-! switchport trunk native vlan 254
-! switchport trunk allowed vlan 1-298,300-1005
-! switchport trunk encapsulation dot1q
-! switchport mode trunk
-! switchport nonegotiate
-! channel-group 2 mode desirable
 !
-!interface FastEthernet0/4
-! ip dhcp snooping trust
-! switchport trunk native vlan 254
-! switchport trunk allowed vlan 1-298,300-1005
-! switchport trunk encapsulation dot1q
-! switchport mode trunk
-! switchport nonegotiate
-! channel-group 2 mode desirable
 !
-!interface FastEthernet0/5
-! ip dhcp snooping trust
-! switchport trunk native vlan 254
-! switchport trunk allowed vlan 1-298,300-1005
-! switchport trunk encapsulation dot1q
-! switchport mode trunk
-! switchport nonegotiate
-! channel-group 3 mode desirable
 !
-!interface FastEthernet0/6
-! ip dhcp snooping trust
-! switchport trunk native vlan 254
-! switchport trunk allowed vlan 1-298,300-1005
-! switchport trunk encapsulation dot1q
-! switchport mode trunk
-! switchport nonegotiate
-! channel-group 3 mode desirable
 !
-interface FastEthernet0/7
- switchport access vlan 299
- shutdown
 !
-interface FastEthernet0/8
- switchport access vlan 299
- shutdown
 !
-interface FastEthernet0/9
- switchport access vlan 299
- shutdown
 !
-interface FastEthernet0/10
- switchport access vlan 299
- shutdown
 !
-interface FastEthernet0/11
- switchport access vlan 299
- shutdown
+interface Port-channel1
+ switchport trunk native vlan 254
+ switchport trunk allowed vlan 1-298,300-1005
+ switchport mode trunk
+ switchport nonegotiate
 !
-interface FastEthernet0/12
- switchport access vlan 299
- shutdown
+interface Port-channel2
+ switchport trunk native vlan 254
+ switchport trunk allowed vlan 1-298,300-1005
+ switchport mode trunk
+ switchport nonegotiate
 !
-interface FastEthernet0/13
- switchport access vlan 299
- shutdown
+interface Port-channel3
+ switchport trunk native vlan 254
+ switchport trunk allowed vlan 1-298,300-1005
+ switchport mode trunk
+ switchport nonegotiate
 !
-interface FastEthernet0/14
- switchport access vlan 299
- shutdown
+interface GigabitEthernet0/0
+ vrf forwarding Mgmt-vrf
+ no ip address
+ negotiation auto
 !
-interface FastEthernet0/15
- switchport access vlan 299
- shutdown
+interface GigabitEthernet1/0/1
+ switchport trunk native vlan 254
+ switchport trunk allowed vlan 1-298,300-1005
+ switchport mode trunk
+ switchport nonegotiate
+ channel-group 1 mode desirable
 !
-interface FastEthernet0/16
- switchport access vlan 299
- shutdown
+interface GigabitEthernet1/0/2
+ switchport trunk native vlan 254
+ switchport trunk allowed vlan 1-298,300-1005
+ switchport mode trunk
+ switchport nonegotiate
+ channel-group 1 mode desirable
 !
-interface FastEthernet0/17
- switchport access vlan 299
- shutdown
+interface GigabitEthernet1/0/3
+ no switchport
+ ip address 172.19.7.18 255.255.255.252
 !
-interface FastEthernet0/18
- switchport access vlan 299
- shutdown
+interface GigabitEthernet1/0/4
 !
-interface FastEthernet0/19
- switchport access vlan 299
- shutdown
+interface GigabitEthernet1/0/5
 !
-interface FastEthernet0/20
- switchport access vlan 299
- shutdown
+interface GigabitEthernet1/0/6
 !
-interface FastEthernet0/21
- switchport access vlan 299
- shutdown
+interface GigabitEthernet1/0/7
 !
-interface FastEthernet0/22
- switchport access vlan 299
- shutdown
+interface GigabitEthernet1/0/8
 !
-interface FastEthernet0/23
- switchport access vlan 299
- shutdown
+interface GigabitEthernet1/0/9
 !
-interface FastEthernet0/24
- switchport access vlan 299
- shutdown
+interface GigabitEthernet1/0/10
 !
-!interface GigabitEthernet0/1
-! no switchport
-! ip address 43.69.202.38 255.255.255.252
-! ip ospf message-digest-key 1 md5 cisco
-! ip ospf hello-interval 6
-! duplex auto
-! speed auto
+interface GigabitEthernet1/0/11
 !
-interface GigabitEthernet0/2
+interface GigabitEthernet1/0/12
+!
+interface GigabitEthernet1/0/13
+!
+interface GigabitEthernet1/0/14
+!
+interface GigabitEthernet1/0/15
+!
+interface GigabitEthernet1/0/16
+!
+interface GigabitEthernet1/0/17
+!
+interface GigabitEthernet1/0/18
+!
+interface GigabitEthernet1/0/19
+!
+interface GigabitEthernet1/0/20
+!
+interface GigabitEthernet1/0/21
+ switchport trunk native vlan 254
+ switchport trunk allowed vlan 1-298,300-1005
+ switchport mode trunk
+ switchport nonegotiate
+ channel-group 2 mode desirable
+!
+interface GigabitEthernet1/0/22
+ switchport trunk native vlan 254
+ switchport trunk allowed vlan 1-298,300-1005
+ switchport mode trunk
+ switchport nonegotiate
+ channel-group 2 mode desirable
+!
+interface GigabitEthernet1/0/23
+ switchport trunk native vlan 254
+ switchport trunk allowed vlan 1-298,300-1005
+ switchport mode trunk
+ switchport nonegotiate
+ channel-group 3 mode desirable
+!
+interface GigabitEthernet1/0/24
+ switchport trunk native vlan 254
+ switchport trunk allowed vlan 1-298,300-1005
+ switchport mode trunk
+ switchport nonegotiate
+ channel-group 3 mode desirable
+!
+interface GigabitEthernet1/1/1
+!
+interface GigabitEthernet1/1/2
+!
+interface GigabitEthernet1/1/3
+!
+interface GigabitEthernet1/1/4
 !
 interface Vlan1
  no ip address
  shutdown
 !
-! Vlans estão incorretas
 interface Vlan10
- ip address 172.22.9.254 255.255.254.0
-! standby version 2
-! standby 0 preempt
-! standby 1 ip 172.22.8.10
-! standby 1 priority 200
-! standby 1 preempt
+ ip address 172.19.8.1 255.255.255.0
+ standby version 2
+ standby 0 ip 172.19.8.254
+ standby 0 priority 150
+ standby 0 preempt
 !
 interface Vlan11
- ip address 172.22.11.254 255.255.254.0
-! standby version 2
-! standby 1 ip 172.22.10.10
-! standby 1 priority 200
-! standby 1 preempt
-! standby 0 preempt
+ ip address 172.19.9.1 255.255.255.0
+ standby version 2
+ standby 0 ip 172.19.9.254
+ standby 0 priority 150
+ standby 0 preempt
 !
 interface Vlan100
- ip address 172.22.5.254 255.255.254.0
-! ip helper-address 172.22.10.1
-! ip access-group 1 out
-! standby version 2
-! standby 1 ip 172.22.4.10
-! standby 1 preempt
-! standby 0 preempt
+ ip address 172.19.4.1 255.255.255.0
+ standby version 2
+ standby 0 ip 172.19.4.254
 !
 interface Vlan101
- ip address 172.22.7.254 255.255.254.0
-! ip helper-address 172.22.10.1
-! ip access-group 1 out
-! standby version 2
-! standby 1 ip 172.22.6.10
-! standby 1 preempt
-! standby 0 preempt
+ ip address 172.19.5.1 255.255.255.0
+ standby version 2
+ standby 0 ip 172.19.5.254
 !
 interface Vlan200
- ip address 172.22.3.254 255.255.252.0
-! ip helper-address 172.22.10.1
-! standby version 2
-! standby 0 preempt
-! standby 1 ip 172.22.0.10
+ ip address 172.19.0.1 255.255.254.0
+ standby version 2
+ standby 0 ip 172.19.1.254
+!
+interface Vlan201
+ ip address 172.19.6.1 255.255.255.0
+ standby version 2
+ standby 0 ip 172.19.6.254
+!
+interface Vlan202
+ ip address 172.19.3.1 255.255.254.0
+ standby version 2
+ standby 0 ip 172.19.3.254
 !
 interface Vlan255
- ip address 172.22.48.5 255.255.255.224
-! ip access-group 1 out
-! standby version 2
-! standby 1 ip 172.22.48.30
-! standby 1 preempt
+ ip address 172.19.7.2 255.255.255.240
+ standby version 2
+ standby 0 ip 172.19.7.14
+ standby 0 priority 150
+ standby 0 preempt
+!
+ip forward-protocol nd
+ip http server
+ip http authentication local
+ip http secure-server
+ip route 0.0.0.0 0.0.0.0 172.19.7.17
 !
 !
-ip classless
-ip route 0.0.0.0 0.0.0.0 172.19.7.1
+ip access-list extended AutoQos-4.0-wlan-Acl-Bulk-Data
+ permit tcp any any eq 22
+ permit tcp any any eq 465
+ permit tcp any any eq 143
+ permit tcp any any eq 993
+ permit tcp any any eq 995
+ permit tcp any any eq 1914
+ permit tcp any any eq ftp
+ permit tcp any any eq ftp-data
+ permit tcp any any eq smtp
+ permit tcp any any eq pop3
+ip access-list extended AutoQos-4.0-wlan-Acl-MultiEnhanced-Conf
+ permit udp any any range 16384 32767
+ permit tcp any any range 50000 59999
+ip access-list extended AutoQos-4.0-wlan-Acl-Scavanger
+ permit tcp any any range 2300 2400
+ permit udp any any range 2300 2400
+ permit tcp any any range 6881 6999
+ permit tcp any any range 28800 29100
+ permit tcp any any eq 1214
+ permit udp any any eq 1214
+ permit tcp any any eq 3689
+ permit udp any any eq 3689
+ permit tcp any any eq 11999
+ip access-list extended AutoQos-4.0-wlan-Acl-Signaling
+ permit tcp any any range 2000 2002
+ permit tcp any any range 5060 5061
+ permit udp any any range 5060 5061
+ip access-list extended AutoQos-4.0-wlan-Acl-Transactional-Data
+ permit tcp any any eq 443
+ permit tcp any any eq 1521
+ permit udp any any eq 1521
+ permit tcp any any eq 1526
+ permit udp any any eq 1526
+ permit tcp any any eq 1575
+ permit udp any any eq 1575
+ permit tcp any any eq 1630
+ permit udp any any eq 1630
+ permit tcp any any eq 1527
+ permit tcp any any eq 6200
+ permit tcp any any eq 3389
+ permit tcp any any eq 5985
+ permit tcp any any eq 8080
 !
-ip flow-export version 9
-!
-!
-!access-list 1 permit 43.69.202.36 0.0.0.3
-!access-list 1 permit 172.22.0.0 0.0.15.255
-!access-list 1 permit 172.22.20.0 0.0.0.255
-!access-list 1 deny any
-!
-banner login #Efetue um backup de seguranca antes de efetuar alteracoes#
 !
 !
 !
+control-plane
+ service-policy input system-cpp-policy
 !
+banner login ^CCEfetue um backup de seguranca antes de efetuar alteracoes^C
 !
 line con 0
  login local
-!
+ stopbits 1
 line aux 0
-!
+ stopbits 1
 line vty 0 4
  login local
  transport input ssh
@@ -290,8 +385,22 @@ line vty 5 15
  login local
  transport input ssh
 !
-!
-!
 ntp server 172.19.7.1
 !
+wsma agent exec
+!
+wsma agent config
+!
+wsma agent filesys
+!
+wsma agent notify
+!
+!
+ap dot11 airtime-fairness policy-name Default 0
+ap group default-group
+ap hyperlocation ble-beacon 0
+ap hyperlocation ble-beacon 1
+ap hyperlocation ble-beacon 2
+ap hyperlocation ble-beacon 3
+ap hyperlocation ble-beacon 4
 end
