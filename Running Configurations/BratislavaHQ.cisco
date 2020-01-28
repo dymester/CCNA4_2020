@@ -128,18 +128,18 @@ interface GigabitEthernet0/2
  speed auto
 !
 interface Serial0/0/0
- bandwidth 1000000
+ bandwidth 20000
  encapsulation ppp
  ppp multilink
  ppp multilink group 1
  no shut
 !
 interface Serial0/0/1
+ bandwidth 20000
  no ip address
  encapsulation ppp
  ppp multilink
  ppp multilink group 1
- clock rate 2000000
  no shut
 !
 ip forward-protocol nd
