@@ -143,6 +143,17 @@ ip forward-protocol nd
 no ip http server
 no ip http secure-server
 !
+router eigrp 100
+ network 56.16.20.212 0.0.0.3
+ network 172.19.40.0 0.0.1.255
+ passive-interface Loopback0
+ passive-interface Loopback1
+ passive-interface Loopback2
+ passive-interface Loopback3
+ passive-interface Loopback4
+ passive-interface GigabitEthernet0/0/0
+ eigrp router-id 2.2.2.2
+
 !
 !
 !
