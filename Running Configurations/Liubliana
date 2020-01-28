@@ -129,9 +129,9 @@ interface GigabitEthernet0/0
 !
 interface GigabitEthernet0/1
  no ip address
- shutdown
  duplex auto
  speed auto
+ no shut
 !
 interface Serial0/0/0
  no ip address
@@ -145,6 +145,27 @@ interface Serial0/0/1
  encapsulation ppp
  ppp multilink
  ppp multilink group 1
+ no shut
+!
+router eigrp 100
+ network 56.16.20.212 0.0.0.3
+ network 192.19.16.0 0.0.15.255
+ passive-interface Loopback0
+ passive-interface Loopback1
+ passive-interface Loopback2
+ passive-interface Loopback3
+ passive-interface Loopback4
+ passive-interface Loopback5
+ passive-interface Loopback6
+ passive-interface Loopback7
+ passive-interface GigabitEthernet0/0
+ eigrp router-id 1.1.1.1
+!
+router ospf 10
+ router-id 4.1.1.1
+ passive-interface GigabitEthernet0/0
+ network 63.49.54.16 0.0.0.7 area 0
+ network 192.19.16.0 0.0.15.255 area 3
 !
 router bgp 60003
  bgp log-neighbor-changes
@@ -155,6 +176,8 @@ router bgp 60003
 ip forward-protocol nd
 no ip http server
 no ip http secure-server
+ip route 172.19.16.0 255.255.240.0 Null0 200
+
 !
 !
 !
