@@ -49,14 +49,14 @@ spanning-tree mode pvst
 !
 !
 interface GigabitEthernet0/0
- ip address 209.165.200.98 255.255.255.252
+ ip address 209.165.200.97 255.255.255.252
  duplex auto
  bandwidth 1000000
  no shutdown
 !
 !
 interface GigabitEthernet0/1
- ip address 63.49.54.22 255.255.255.252
+ ip address 63.49.54.21 255.255.255.252
  duplex auto
  bandwidth 1000000
  no shutdown
@@ -69,7 +69,7 @@ interface GigabitEthernet0/2
 !
 interface Serial0/0/0
  bandwidth 1000000
- ip address 193.136.60.106 255.255.255.252
+ ip address 193.136.60.107 255.255.255.252
 ! ip ospf message-digest-key 1 md5 cisco
 ! ip ospf cost 20
 ! ip ospf hello-interval 6
@@ -86,9 +86,6 @@ interface Serial0/1/0
  shutdown
 !
 router bgp 60000
-network 193.136.60.104 mask 255.255.255.252
-network 209.165.200.96 mask 255.255.255.252
-network 63.49.54.20 mask 255.255.255.252
 neighbor 193.136.60.106 remote-as 60001
 neighbor 209.165.200.98 remote-as 60002
 neighbor 63.49.49.22 remote-as 60003
