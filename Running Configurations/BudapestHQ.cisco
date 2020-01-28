@@ -2,13 +2,11 @@ version 15.5
 service timestamps debug datetime msec
 service timestamps log datetime msec
 service password-encryption
-no platform punt-keepalive disable-kernel-core
 !
 hostname BudapestBranch
 !
 boot-start-marker
 boot-end-marker
-!
 !
 vrf definition Mgmt-intf
  !
@@ -31,8 +29,7 @@ no aaa new-model
 !
 !
 !
-
-
+ip domain name cisco.com
 ip host AP1 172.19.7.8
 ip host AP2 172.19.7.9
 ip host Bratislava 56.16.20.214
@@ -44,8 +41,6 @@ ip host ServiceProvider 209.165.200.97
 ip host SW1 172.19.7.4
 ip host SW2 172.19.7.5
 ip host Vienna 193.136.60.106
-
-ip domain name cisco.com
 !
 !
 !
@@ -67,6 +62,8 @@ multilink bundle-name authenticated
 license udi pid ISR4321/K9 sn FDO22391NHD
 !
 spanning-tree extend system-id
+!
+crypto key generate rsa modulus 1024 exportable
 !
 username cisco privilege 15 secret 5 $1$mERr$9cTjUIEqNGurQiFU.ZeCi1
 !
@@ -140,12 +137,12 @@ interface Loopback9
  ip address 172.19.36.1 255.255.255.0
  ipv6 address 1000:0:0:19::1/64
 !
-interface GigabitEthernet0/0/0
+interface GigabitEthernet0/0
  bandwidth 100000
  ip address 209.165.200.98 255.255.255.252
- negotiation auto
+ no shut
 !
-interface GigabitEthernet0/0/1
+interface GigabitEthernet0/1
  no ip address
  shutdown
  negotiation auto
@@ -166,19 +163,23 @@ interface Serial0/2/1
  no ip address
  shutdown
 !
-interface GigabitEthernet0
- vrf forwarding Mgmt-intf
- no ip address
- shutdown
- negotiation auto
-!
 interface Vlan1
  no ip address
  shutdown
 !
 router ospf 10
  router-id 3.1.1.1
- passive-interface GigabitEthernet0/0/1
+ passive-interface GigabitEthernet0/1
+ passive-interface Loopback0
+ passive-interface Loopback1
+ passive-interface Loopback2
+ passive-interface Loopback3
+ passive-interface Loopback4
+ passive-interface Loopback5
+ passive-interface Loopback6
+ passive-interface Loopback7
+ passive-interface Loopback8
+ passive-interface Loopback9
  network 172.19.32.0 0.0.7.255 area 2
  network 209.165.200.96 0.0.0.3 area 0
 !
