@@ -70,6 +70,7 @@ interface GigabitEthernet0/2
 interface Serial0/0/0
  bandwidth 1000000
  ip address 193.136.60.107 255.255.255.252
+ no shutdown
 ! ip ospf message-digest-key 1 md5 cisco
 ! ip ospf cost 20
 ! ip ospf hello-interval 6
@@ -85,10 +86,17 @@ interface Serial0/1/0
  clock rate 2000000
  shutdown
 !
+router ospf 10
+ router-id 1.1.1.1
+ network 63.49.54.20 0.0.0.3 area 0
+ network 193.136.60.104 0.0.0.3 area 0
+ network 209.165.200.96 0.0.0.3 area 0
+!
 router bgp 60000
-neighbor 193.136.60.106 remote-as 60001
-neighbor 209.165.200.98 remote-as 60002
-neighbor 63.49.49.22 remote-as 60003
+ neighbor 63.49.54.22 remote-as 60003
+ neighbor 193.136.60.105 remote-as 60001
+ neighbor 209.165.200.98 remote-as 60002
+
 !
 alias exec r1 ssh -l cisco Vienna
 alias exec r2 ssh -l cisco Liubliana
