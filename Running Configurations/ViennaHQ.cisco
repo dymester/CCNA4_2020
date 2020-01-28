@@ -67,6 +67,9 @@ license boot module c2900 technology-package uck9
 !
 !
 vtp mode transparent
+!
+crypto key generate rsa modulus 1024 exportable
+!
 username cisco privilege 15 secret 5 $1$mERr$9cTjUIEqNGurQiFU.ZeCi1
 !
 redundancy
@@ -99,20 +102,24 @@ interface GigabitEthernet0/0
  ip address 172.19.7.17 255.255.255.252
  duplex auto
  speed auto
+ no shut
 !
 interface GigabitEthernet0/1
  ip address 172.19.7.21 255.255.255.252
  duplex auto
  speed auto
+ no shut
 !
 interface GigabitEthernet0/2
  no ip address
  duplex auto
  speed auto
  ipv6 address 2001::1/64
+ no shut
 !
 interface Serial0/0/0
  ip address 193.136.60.105 255.255.255.252
+ no shut
 !
 interface Serial0/0/1
  no ip address
