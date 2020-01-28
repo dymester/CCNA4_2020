@@ -60,6 +60,8 @@ license boot module c2900 technology-package securityk9
 license boot module c2900 technology-package uck9
 !
 !
+crypto key generate rsa modulus 1024 exportable
+!
 username cisco privilege 15 secret 5 $1$mERr$9cTjUIEqNGurQiFU.ZeCi1
 username liubliana password 7 060503205F5D
 !
@@ -130,6 +132,7 @@ interface Serial0/0/0
  encapsulation ppp
  ppp multilink
  ppp multilink group 1
+ no shut
 !
 interface Serial0/0/1
  no ip address
@@ -137,6 +140,7 @@ interface Serial0/0/1
  ppp multilink
  ppp multilink group 1
  clock rate 2000000
+ no shut
 !
 ip forward-protocol nd
 !
@@ -151,7 +155,8 @@ router eigrp 100
  passive-interface Loopback2
  passive-interface Loopback3
  passive-interface Loopback4
- passive-interface GigabitEthernet0/0/0
+ passive-interface GigabitEthernet0/0
+ passive-interface g0/1
  eigrp router-id 2.2.2.2
 
 !
