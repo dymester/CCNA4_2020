@@ -1,34 +1,36 @@
 ---------------------------Service Provider-------------------------------
---------------------------Service Provider-------------------------------
-version 15.1
-no service timestamps log datetime msec
-no service timestamps debug datetime msec
+version 15.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
 service password-encryption
 !
 hostname ServiceProvider
 !
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+memory-size iomem 5
+clock timezone WET 0 0
+clock summer-time WEST recurring last Sun Mar 1:00 last Sun Oct 2:00
 !
 !
 !
 !
 !
-no ip cef
-ipv6 unicast-routing
-!
-no ipv6 cef
 !
 !
 !
-username cisco privilege 15 secret 5 $1$mERr$9cTjUIEqNGurQiFU.ZeCi1
-!
-!
-license udi pid CISCO2911/K9 sn FTX15249R0Q-
 !
 !
 !
-ip domain-name cisco.com
 !
-ip host Vienna 193.136.60.106
+!
+!
+ip domain name cisco.com
+ip host Vienna 193.136.60.105
 ip host Budapest 209.165.200.98
 ip host Liubliana 63.49.54.22
 ip host Bratislava 56.16.20.214
@@ -37,94 +39,177 @@ ip host MLS1 172.19.7.2
 ip host MLS2 172.19.7.3
 ip host SW1 172.19.7.4
 ip host SW2 172.19.7.5
-!ip host HTTP 172.19.7.6
-!ip host DHCP 172.19.7.7
 ip host AP1 172.19.7.8
 ip host AP2 172.19.7.9
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
 !
 !
-spanning-tree mode pvst
 !
 !
 !
+!
+cts logging verbose
+!
+!
+voice-card 0
+!
+!
+!
+!
+!
+!
+!
+!
+license udi pid CISCO2911/K9 sn FCZ160270GF
+license accept end user agreement
+license boot module c2900 technology-package securityk9
+license boot module c2900 technology-package uck9
+!
+!
+vtp mode transparent
+username cisco privilege 15 secret 5 $1$mERr$9cTjUIEqNGurQiFU.ZeCi1
+!
+redundancy
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Tunnel0
+ ip address 10.0.0.2 255.255.255.0
+!
+interface Embedded-Service-Engine0/0
+ no ip address
+ shutdown
 !
 interface GigabitEthernet0/0
- ip address 209.165.200.97 255.255.255.252
- duplex auto
  bandwidth 1000000
- no shutdown
-!
+ ip address 209.165.200.97 255.255.255.252
+ ip ospf authentication message-digest
+ ip ospf message-digest-key 1 md5 7 14141E0A1F17
+ ip ospf hello-interval 5
+ duplex auto
+ speed auto
 !
 interface GigabitEthernet0/1
- ip address 63.49.54.21 255.255.255.252
- duplex auto
  bandwidth 1000000
- no shutdown
+ ip address 63.49.54.21 255.255.255.252
+ ip ospf authentication message-digest
+ ip ospf message-digest-key 1 md5 7 104D05181604
+ ip ospf hello-interval 5
+ duplex auto
+ speed auto
 !
 interface GigabitEthernet0/2
  no ip address
+ shutdown
  duplex auto
  speed auto
- shutdown
 !
 interface Serial0/0/0
  bandwidth 1000000
- ip address 193.136.60.107 255.255.255.252
- no shutdown
-! ip ospf message-digest-key 1 md5 cisco
-! ip ospf cost 20
-! ip ospf hello-interval 6
-! ip nat inside
+ ip address 193.136.60.106 255.255.255.252
+ ip ospf message-digest-key 1 md5 7 104D05181604
+ ip ospf hello-interval 5
+ clock rate 2000000
 !
 interface Serial0/0/1
  no ip address
- clock rate 2000000
  shutdown
 !
 interface Serial0/1/0
  no ip address
- clock rate 2000000
  shutdown
+ clock rate 2000000
+!
+interface Serial0/1/1
+ no ip address
+ shutdown
+ clock rate 2000000
 !
 router ospf 10
  router-id 1.1.1.1
+ area 0 authentication message-digest
  network 63.49.54.20 0.0.0.3 area 0
  network 193.136.60.104 0.0.0.3 area 0
  network 209.165.200.96 0.0.0.3 area 0
 !
 router bgp 60000
+ bgp log-neighbor-changes
  neighbor 63.49.54.22 remote-as 60003
  neighbor 193.136.60.105 remote-as 60001
  neighbor 209.165.200.98 remote-as 60002
-
 !
-alias exec r1 ssh -l cisco Vienna
-alias exec r2 ssh -l cisco Liubliana
-alias exec r3 ssh -l cisco Budapest
+ip forward-protocol nd
 !
-interface Vlan1
- no ip address
+no ip http server
+no ip http secure-server
+!
+!
+!
+!
+!
+control-plane
+!
+ !
+ !
+ !
+ !
+!
+mgcp behavior rsip-range tgcp-only
+mgcp behavior comedia-role none
+mgcp behavior comedia-check-media-src disable
+mgcp behavior comedia-sdp-force disable
+!
+mgcp profile default
+!
+!
+!
+!
+!
+!
+!
+gatekeeper
  shutdown
 !
-ip classless
 !
-ip flow-export version 9
-!
-!
-no cdp run
-!
-banner login #Efetue um backup de seguranca antes de efetuar alteracoes#
-banner motd #Acesso Restrito a Utilizadores Autorizados#
-!
-!
-!
-!
+alias exec Vienna ssh 193.136.60.105
+alias exec Budapest ssh 209.165.200.98
+alias exec Liubliana ssh 56.16.20.213
+alias exec Bratislava ssh 56.16.20.214
+alias exec ServiceProvider ssh 63.49.54.21
+alias exec MLS1 ssh 172.19.7.2
+alias exec MLS2 ssh 172.19.7.3
+alias exec SW1 ssh 172.19.7.4
+alias exec SW2 ssh 172.19.7.5
+alias exec AP1 ssh 172.19.7.8
+alias exec AP2 ssh 172.19.7.9
+alias exec dc disconnect ssh vty 0
+banner login ^CEfetue um backup de seguranca antes de efetuar alteracoes^C
+banner motd ^CAcesso Restrito a Utilizadores Autorizados^C
 !
 line con 0
  login local
-!
 line aux 0
-!
+line 2
+ no activation-character
+ no exec
+ transport preferred none
+ transport output pad telnet rlogin lapb-ta mop udptn v120 ssh
+ stopbits 1
 line vty 0 4
  login local
  transport input ssh
@@ -132,7 +217,7 @@ line vty 5 15
  login local
  transport input ssh
 !
-!
-crypto key generate rsa modulus 1024 exportable
+scheduler allocate 20000 1000
+ntp server 193.136.60.105
 !
 end
