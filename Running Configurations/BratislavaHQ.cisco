@@ -1,9 +1,8 @@
-version 15.1
 service timestamps debug datetime msec
 service timestamps log datetime msec
 service password-encryption
 !
-hostname Bratislava
+hostname BratislavaBranch
 !
 boot-start-marker
 boot-end-marker
@@ -14,16 +13,16 @@ no aaa new-model
 !
 memory-size iomem 5
 !
-no ipv6 cef
+dot11 syslog
 ip source-route
+!
+!
 ip cef
 !
 !
 !
-!
-!
 ip domain name cisco.com
-ip host Vienna 193.136.60.106
+ip host Vienna 193.136.60.105
 ip host Budapest 209.165.200.98
 ip host Liubliana 56.16.20.213
 ip host Bratislava 56.16.20.214
@@ -32,10 +31,9 @@ ip host MLS1 172.19.7.2
 ip host MLS2 172.19.7.3
 ip host SW1 172.19.7.4
 ip host SW2 172.19.7.5
-!ip host HTTP 172.19.7.6
-!ip host DHCP 172.19.7.7
 ip host AP1 172.19.7.8
 ip host AP2 172.19.7.9
+no ipv6 cef
 !
 multilink bundle-name authenticated
 !
@@ -43,30 +41,29 @@ multilink bundle-name authenticated
 !
 !
 !
-crypto pki token default removal timeout 0
+!
+key chain key1
+ key 1
+  key-string 7 154B535B527F7F777A6265
+!
+!
+!
+!
 !
 !
 voice-card 0
 !
+crypto pki token default removal timeout 0
 !
 !
 !
 !
-!
-!
-license udi pid CISCO2911/K9 sn FCZ160220UG
+license udi pid CISCO2851 sn FCZ104373PD
 license accept end user agreement
-license boot module c2900 technology-package securityk9
-license boot module c2900 technology-package uck9
-!
-!
-crypto key generate rsa modulus 1024 exportable
-!
 username cisco privilege 15 secret 5 $1$mERr$9cTjUIEqNGurQiFU.ZeCi1
-username liubliana password 7 060503205F5D
+username LiublianaBranch password 7 045807071C32
 !
 redundancy
-!
 !
 !
 !
@@ -99,18 +96,18 @@ interface Loopback4
 !
 interface Multilink1
  ip address 56.16.20.214 255.255.255.252
+ ip authentication mode eigrp 100 md5
+ ip authentication key-chain eigrp 100 key1
+ ip summary-address eigrp 100 56.16.20.212 255.255.255.252
  compress predictor
  ppp quality 80
  ppp authentication chap
  ppp multilink
  ppp multilink group 1
 !
-interface Embedded-Service-Engine0/0
- no ip address
- shutdown
-!
 interface GigabitEthernet0/0
  no ip address
+ ip summary-address eigrp 100 0.0.0.0 0.0.0.0
  shutdown
  duplex auto
  speed auto
@@ -121,18 +118,13 @@ interface GigabitEthernet0/1
  duplex auto
  speed auto
 !
-interface GigabitEthernet0/2
- no ip address
- shutdown
- duplex auto
- speed auto
-!
 interface Serial0/0/0
  bandwidth 20000
+ no ip address
  encapsulation ppp
+ no fair-queue
  ppp multilink
  ppp multilink group 1
- no shut
 !
 interface Serial0/0/1
  bandwidth 20000
@@ -140,12 +132,7 @@ interface Serial0/0/1
  encapsulation ppp
  ppp multilink
  ppp multilink group 1
- no shut
 !
-ip forward-protocol nd
-!
-no ip http server
-no ip http secure-server
 !
 router eigrp 100
  network 56.16.20.212 0.0.0.3
@@ -156,9 +143,14 @@ router eigrp 100
  passive-interface Loopback3
  passive-interface Loopback4
  passive-interface GigabitEthernet0/0
- passive-interface g0/1
+ passive-interface GigabitEthernet0/1
  eigrp router-id 2.2.2.2
-
+!
+ip forward-protocol nd
+no ip http server
+no ip http secure-server
+!
+!
 !
 !
 !
@@ -177,23 +169,24 @@ mgcp profile default
 !
 !
 !
-gatekeeper
- shutdown
-!
-!
-banner login ^CEfetue um backup de seguranca antes de efetuar alteracoes^C
-banner motd ^CCAcesso Restrito a Utilizadores Autorizados^C
+alias exec Vienna ssh 193.136.60.105
+alias exec Budapest ssh 209.165.200.98
+alias exec Liubliana ssh 56.16.20.213
+alias exec Bratislava ssh 56.16.20.214
+alias exec ServiceProvider ssh 63.49.54.21
+alias exec MLS1 ssh 172.19.7.2
+alias exec MLS2 ssh 172.19.7.3
+alias exec SW1 ssh 172.19.7.4
+alias exec SW2 ssh 172.19.7.5
+alias exec AP1 ssh 172.19.7.8
+alias exec AP2 ssh 172.19.7.9
+alias exec dc disconnect ssh vty 0
+banner login ^CCEfetue um backup de seguranca antes de efetuar alteracoes^C
+banner motd ^CCCAcesso Restrito a Utilizadores Autorizados^C
 !
 line con 0
  login local
 line aux 0
-line 2
- no activation-character
- no exec
- transport preferred none
- transport input all
- transport output pad telnet rlogin lapb-ta mop udptn v120 ssh
- stopbits 1
 line vty 0 4
  login local
  transport input ssh
