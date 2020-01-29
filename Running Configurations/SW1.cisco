@@ -4,7 +4,7 @@ service timestamps debug datetime msec
 service timestamps log datetime msec
 service password-encryption
 !
-hostname SW1
+hostname Switch1
 !
 boot-start-marker
 boot-end-marker
@@ -12,23 +12,25 @@ boot-end-marker
 !
 username cisco privilege 15 secret 5 $1$mERr$9cTjUIEqNGurQiFU.ZeCi1
 no aaa new-model
+clock timezone WET 0 0
+clock summer-time WEST recurring last Sun Mar 1:00 last Sun Oct 2:00
 system mtu routing 1500
 !
 !
 ip domain-name cisco.com
-ip host Vienna 172.19.7.1
-ip host AP2 172.19.7.9
-ip host AP1 172.19.7.8
-ip host DHCP 172.19.7.7
-ip host HTTP 172.19.7.6
-ip host SW2 172.19.7.5
-ip host SW1 172.19.7.4
-ip host MLS2 172.19.7.3
-ip host MLS1 172.19.7.2
-ip host ServiceProvider 63.49.54.23
-ip host Bratislava 56.16.20.214
-ip host Liubliana 56.16.20.213
+ip host Vienna 172.19.7.17
 ip host Budapest 209.165.200.98
+ip host Liubliana 56.16.20.213
+ip host Bratislava 56.16.20.214
+ip host ServiceProvider 63.49.54.23
+ip host MLS1 172.19.7.2
+ip host MLS2 172.19.7.3
+ip host SW1 172.19.7.4
+ip host SW2 172.19.7.5
+ip host HTTP 172.19.7.6
+ip host DHCP 172.19.7.7
+ip host AP1 172.19.7.8
+ip host AP2 172.19.7.9
 !
 !
 crypto pki trustpoint TP-self-signed-879687936
@@ -79,12 +81,14 @@ interface Port-channel2
  switchport trunk allowed vlan 1-298,300-1005
  switchport mode trunk
  switchport nonegotiate
+ ip dhcp snooping trust
 !
 interface Port-channel5
  switchport trunk native vlan 254
  switchport trunk allowed vlan 1-298,300-1005
  switchport mode trunk
  switchport nonegotiate
+ ip dhcp snooping trust
 !
 interface FastEthernet0/1
  switchport trunk native vlan 254
@@ -92,6 +96,7 @@ interface FastEthernet0/1
  switchport mode trunk
  switchport nonegotiate
  channel-group 2 mode desirable
+ ip dhcp snooping trust
 !
 interface FastEthernet0/2
  switchport trunk native vlan 254
@@ -99,6 +104,7 @@ interface FastEthernet0/2
  switchport mode trunk
  switchport nonegotiate
  channel-group 2 mode desirable
+ ip dhcp snooping trust
 !
 interface FastEthernet0/3
  switchport trunk native vlan 254
@@ -106,6 +112,7 @@ interface FastEthernet0/3
  switchport mode trunk
  switchport nonegotiate
  channel-group 5 mode desirable
+ ip dhcp snooping trust
 !
 interface FastEthernet0/4
  switchport trunk native vlan 254
@@ -113,50 +120,188 @@ interface FastEthernet0/4
  switchport mode trunk
  switchport nonegotiate
  channel-group 5 mode desirable
+ ip dhcp snooping trust
 !
 interface FastEthernet0/5
+ switchport access vlan 10
+ switchport mode access
+ switchport nonegotiate
+ switchport port-security mac-address sticky
+ switchport port-security
+ ip dhcp snooping limit rate 10
 !
 interface FastEthernet0/6
+ switchport access vlan 10
+ switchport mode access
+ switchport nonegotiate
+ switchport port-security mac-address sticky
+ switchport port-security
+ ip dhcp snooping limit rate 10
 !
 interface FastEthernet0/7
+ switchport access vlan 10
+ switchport mode access
+ switchport nonegotiate
+ switchport port-security mac-address sticky
+ switchport port-security
+ ip dhcp snooping limit rate 10
 !
 interface FastEthernet0/8
+ switchport access vlan 10
+ switchport mode access
+ switchport nonegotiate
+ switchport port-security mac-address sticky
+ switchport port-security
+ ip dhcp snooping limit rate 10
 !
 interface FastEthernet0/9
+ switchport access vlan 10
+ switchport mode access
+ switchport nonegotiate
+ switchport port-security mac-address sticky
+ switchport port-security
+ ip dhcp snooping limit rate 10
 !
 interface FastEthernet0/10
+ switchport access vlan 10
+ switchport mode access
+ switchport nonegotiate
+ switchport port-security mac-address sticky
+ switchport port-security
+ ip dhcp snooping limit rate 10
 !
 interface FastEthernet0/11
+ switchport access vlan 10
+ switchport mode access
+ switchport nonegotiate
+ switchport port-security mac-address sticky
+ switchport port-security
+ ip dhcp snooping limit rate 10
 !
 interface FastEthernet0/12
+ switchport access vlan 10
+ switchport mode access
+ switchport nonegotiate
+ switchport port-security mac-address sticky
+ switchport port-security
+ ip dhcp snooping limit rate 10
 !
 interface FastEthernet0/13
+ switchport access vlan 10
+ switchport mode access
+ switchport nonegotiate
+ switchport port-security mac-address sticky
+ switchport port-security
+ ip dhcp snooping limit rate 10
 !
 interface FastEthernet0/14
+ switchport access vlan 10
+ switchport mode access
+ switchport nonegotiate
+ switchport port-security mac-address sticky
+ switchport port-security
+ ip dhcp snooping limit rate 10
 !
 interface FastEthernet0/15
+ switchport access vlan 11
+ switchport mode access
+ switchport nonegotiate
+ switchport port-security mac-address sticky
+ switchport port-security
+ ip dhcp snooping limit rate 10
+ ip dhcp snooping trust
 !
 interface FastEthernet0/16
+ switchport access vlan 11
+ switchport mode access
+ switchport nonegotiate
+ switchport port-security mac-address sticky
+ switchport port-security
+ ip dhcp snooping limit rate 10
+ ip dhcp snooping trust
 !
 interface FastEthernet0/17
+ switchport access vlan 11
+ switchport mode access
+ switchport nonegotiate
+ switchport port-security mac-address sticky
+ switchport port-security
+ ip dhcp snooping limit rate 10
+ ip dhcp snooping trust
 !
 interface FastEthernet0/18
+ switchport access vlan 11
+ switchport mode access
+ switchport nonegotiate
+ switchport port-security mac-address sticky
+ switchport port-security
+ ip dhcp snooping limit rate 10
+ ip dhcp snooping trust
 !
 interface FastEthernet0/19
+ switchport access vlan 11
+ switchport mode access
+ switchport nonegotiate
+ switchport port-security mac-address sticky
+ switchport port-security
+ ip dhcp snooping limit rate 10
+ ip dhcp snooping trust
 !
 interface FastEthernet0/20
+ switchport access vlan 11
+ switchport mode access
+ switchport nonegotiate
+ switchport port-security mac-address sticky
+ switchport port-security
+ ip dhcp snooping limit rate 10
+ ip dhcp snooping trust
 !
 interface FastEthernet0/21
+ switchport access vlan 11
+ switchport mode access
+ switchport nonegotiate
+ switchport port-security mac-address sticky
+ switchport port-security
+ ip dhcp snooping limit rate 10
+ ip dhcp snooping trust
 !
 interface FastEthernet0/22
+ switchport access vlan 11
+ switchport mode access
+ switchport nonegotiate
+ switchport port-security mac-address sticky
+ switchport port-security
+ ip dhcp snooping limit rate 10
+ ip dhcp snooping trust
 !
 interface FastEthernet0/23
+ switchport access vlan 11
+ switchport mode access
+ switchport nonegotiate
+ switchport port-security mac-address sticky
+ switchport port-security
+ ip dhcp snooping limit rate 10
+ ip dhcp snooping trust
 !
 interface FastEthernet0/24
+ switchport access vlan 11
+ switchport mode access
+ switchport nonegotiate
+ switchport port-security mac-address sticky
+ switchport port-security mac-address sticky 001c.f6fa.5481
+ switchport port-security
+ ip dhcp snooping limit rate 10
+ ip dhcp snooping trust
 !
 interface GigabitEthernet0/1
+ switchport access vlan 299
+ switchport mode access
+ shutdown
 !
 interface GigabitEthernet0/2
+ switchport access vlan 299
+ switchport mode access
+ shutdown
 !
 interface Vlan1
  no ip address
@@ -165,12 +310,25 @@ interface Vlan1
 interface Vlan255
  ip address 172.19.7.4 255.255.255.240
 !
+ip default-gateway 172.19.7.14
 ip http server
 ip http secure-server
 !
 vstack
-banner login ^CEfetue um backup de seguranca antes de efetuar alteracoes^C
-banner motd ^CAcesso Restrito a Utilizadores Autorizados^C
+banner login ^CCCEfetue um backup de seguranca antes de efetuar alteracoes^C
+banner motd ^CCCCAcesso Restrito a Utilizadores Autorizados^C
+alias exec Vienna ssh 193.136.60.105
+alias exec Budapest ssh 209.165.200.98
+alias exec Liubliana ssh 56.16.20.213
+alias exec Bratislava ssh 56.16.20.214
+alias exec ServiceProvider ssh 63.49.54.21
+alias exec MLS1 ssh 172.19.7.2
+alias exec MLS2 ssh 172.19.7.3
+alias exec SW1 ssh 172.19.7.4
+alias exec SW2 ssh 172.19.7.5
+alias exec AP1 ssh 172.19.7.8
+alias exec AP2 ssh 172.19.7.9
+alias exec dc disconnect ssh vty 0
 !
 line con 0
  login local
@@ -181,5 +339,5 @@ line vty 5 15
  login local
  transport input ssh
 !
-ntp server 193.136.60.106
+ntp server 172.19.7.17
 end
