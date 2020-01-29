@@ -12,6 +12,8 @@ boot-end-marker
 !
 no aaa new-model
 memory-size iomem 5
+clock timezone WET 0 0
+clock summer-time WEST recurring last Sun Mar 1:00 last Sun Oct 2:00
 !
 !
 !
@@ -27,13 +29,13 @@ memory-size iomem 5
 !
 !
 ip domain name cisco.com
+ip host ServiceProvider 193.136.60.106
 ip host MLS1 172.19.7.18
 ip host MLS2 172.19.7.22
 ip host Vienna 193.136.60.106
 ip host Budapest 209.165.200.98
 ip host Liubliana 63.49.54.22
 ip host Bratislava 56.16.20.214
-ip host ServiceProvider 193.136.60.107
 ip host SW1 172.19.7.4
 ip host SW2 172.19.7.5
 ip host AP1 172.19.7.8
@@ -60,16 +62,13 @@ voice-card 0
 !
 !
 !
-license udi pid CISCO2911/K9 sn FCZ160220UC
+license udi pid CISCO2911/K9 sn FCZ160270GH
 license accept end user agreement
 license boot module c2900 technology-package securityk9
 license boot module c2900 technology-package uck9
 !
 !
 vtp mode transparent
-!
-crypto key generate rsa modulus 1024 exportable
-!
 username cisco privilege 15 secret 5 $1$mERr$9cTjUIEqNGurQiFU.ZeCi1
 !
 redundancy
@@ -89,10 +88,11 @@ redundancy
 !
 !
 interface Tunnel0
- ip address 10.0.0.1 255.255.255.0
- ip mtu 1400
- ip tcp adjust-mss 1360
- tunnel source 193.136.30.105
+ ip address 1.0.0.1 255.255.255.0
+ ip ospf network broadcast
+ ip ospf mtu-ignore
+ tunnel source 193.136.60.105
+ tunnel destination 209.165.200.98
 !
 interface Embedded-Service-Engine0/0
  no ip address
@@ -102,24 +102,24 @@ interface GigabitEthernet0/0
  ip address 172.19.7.17 255.255.255.252
  duplex auto
  speed auto
- no shut
 !
 interface GigabitEthernet0/1
  ip address 172.19.7.21 255.255.255.252
  duplex auto
  speed auto
- no shut
 !
 interface GigabitEthernet0/2
  no ip address
  duplex auto
  speed auto
  ipv6 address 2001::1/64
- no shut
 !
 interface Serial0/0/0
  ip address 193.136.60.105 255.255.255.252
- no shut
+ ip ospf authentication message-digest
+ ip ospf message-digest-key 1 md5 7 110A15040401
+ ip ospf hello-interval 5
+ clock rate 2000000
 !
 interface Serial0/0/1
  no ip address
@@ -129,7 +129,8 @@ interface Serial0/0/1
 router ospf 10
  router-id 2.1.1.1
  passive-interface GigabitEthernet0/2
- network 192.19.0.0 0.0.15.255 area 1
+ network 10.0.0.0 0.0.0.255 area 0
+ network 172.19.0.0 0.0.15.255 area 1
  network 193.136.60.104 0.0.0.3 area 0
  default-information originate
 !
@@ -144,7 +145,7 @@ no ip http server
 no ip http secure-server
 !
 ip route 0.0.0.0 0.0.0.0 GigabitEthernet0/2
-ip route 172.19.0.0 255.255.240.0 Null0 200
+ip route 172.19.0.0 255.255.240.0 172.19.7.18
 !
 !
 !
@@ -173,6 +174,20 @@ gatekeeper
  shutdown
 !
 !
+alias exec Vienna ssh 193.136.60.105
+alias exec Budapest ssh 209.165.200.98
+alias exec Liubliana ssh 56.16.20.213
+alias exec Bratislava ssh 56.16.20.214
+alias exec ServiceProvider ssh 63.49.54.21
+alias exec MLS1 ssh 172.19.7.2
+alias exec MLS2 ssh 172.19.7.3
+alias exec SW1 ssh 172.19.7.4
+alias exec SW2 ssh 172.19.7.5
+alias exec AP1 ssh 172.19.7.8
+alias exec AP2 ssh 172.19.7.9
+alias exec dc disconnect ssh vty 0
+banner login ^CCEfetue um backup de seguranca antes de efetuar alteracoes^C
+banner motd ^CCCAcesso Restrito a Utilizadores Autorizados^C
 !
 line con 0
  login local
@@ -191,5 +206,7 @@ line vty 5 15
  transport input ssh
 !
 scheduler allocate 20000 1000
+ntp master
+ntp update-calendar
 !
 end
