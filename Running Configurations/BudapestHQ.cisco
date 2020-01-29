@@ -1,4 +1,4 @@
-version 15.5
+version 15.1
 service timestamps debug datetime msec
 service timestamps log datetime msec
 service password-encryption
@@ -8,28 +8,23 @@ hostname BudapestBranch
 boot-start-marker
 boot-end-marker
 !
-vrf definition Mgmt-intf
- !
- address-family ipv4
- exit-address-family
- !
- address-family ipv6
- exit-address-family
 !
 !
 no aaa new-model
 !
+clock timezone WET 0 0
+clock summer-time WEST recurring last Sun Mar 1:00 last Sun Oct 2:00
+!
+dot11 syslog
+ip source-route
 !
 !
-!
-!
-!
-!
-!
+ip cef
 !
 !
 !
 ip domain name cisco.com
+ip host Vienna 193.136.60.105
 ip host AP1 172.19.7.8
 ip host AP2 172.19.7.9
 ip host Bratislava 56.16.20.214
@@ -40,53 +35,31 @@ ip host MLS2 172.19.7.3
 ip host ServiceProvider 209.165.200.97
 ip host SW1 172.19.7.4
 ip host SW2 172.19.7.5
-ip host Vienna 193.136.60.106
-!
-!
-!
-!
-!
-!
-!
-!
-!
-!
-subscriber templating
-vtp mode transparent
+no ipv6 cef
 !
 multilink bundle-name authenticated
 !
 !
 !
 !
-license udi pid ISR4321/K9 sn FDO22391NHD
 !
-spanning-tree extend system-id
 !
-crypto key generate rsa modulus 1024 exportable
 !
+!
+!
+!
+!
+voice-card 0
+!
+crypto pki token default removal timeout 0
+!
+!
+!
+!
+license udi pid CISCO2851 sn FCZ111074UD
 username cisco privilege 15 secret 5 $1$mERr$9cTjUIEqNGurQiFU.ZeCi1
 !
 redundancy
- mode none
-!
-!
-!
-!
-!
-vlan internal allocation policy ascending
-!
-!
-!
-!
-!
-!
-!
-!
-!
-!
-!
-!
 !
 !
 !
@@ -137,35 +110,37 @@ interface Loopback9
  ip address 172.19.36.1 255.255.255.0
  ipv6 address 1000:0:0:19::1/64
 !
+interface Tunnel0
+ ip address 10.0.0.2 255.255.255.0
+ ip ospf network broadcast
+ tunnel source 209.165.200.98
+ tunnel destination 193.136.60.105
+!
 interface GigabitEthernet0/0
  bandwidth 100000
  ip address 209.165.200.98 255.255.255.252
- no shut
+ ip ospf authentication message-digest
+ ip ospf message-digest-key 1 md5 7 110A15040401
+ ip ospf hello-interval 5
+ duplex auto
+ speed auto
 !
 interface GigabitEthernet0/1
  no ip address
+ ip ospf authentication message-digest
  shutdown
- negotiation auto
+ duplex auto
+ speed auto
 !
 interface Serial0/1/0
  no ip address
  shutdown
+ clock rate 2000000
 !
 interface Serial0/1/1
  no ip address
  shutdown
-!
-interface Serial0/2/0
- no ip address
- shutdown
-!
-interface Serial0/2/1
- no ip address
- shutdown
-!
-interface Vlan1
- no ip address
- shutdown
+ clock rate 2000000
 !
 router ospf 10
  router-id 3.1.1.1
@@ -180,6 +155,7 @@ router ospf 10
  passive-interface Loopback7
  passive-interface Loopback8
  passive-interface Loopback9
+ network 10.0.0.0 0.0.0.255 area 0
  network 172.19.32.0 0.0.7.255 area 2
  network 209.165.200.96 0.0.0.3 area 0
 !
@@ -191,8 +167,11 @@ router bgp 60002
 ip forward-protocol nd
 no ip http server
 no ip http secure-server
-ip tftp source-interface GigabitEthernet0
+!
+!
 ip route 172.19.32.0 255.255.248.0 Null0 200
+!
+!
 !
 !
 !
@@ -200,9 +179,29 @@ ip route 172.19.32.0 255.255.248.0 Null0 200
 !
 control-plane
 !
-banner login ^CCEfetue um backup de seguranca antes de efetuar alteragues.^C
-banner motd ^CCAcesso Restrito a Utilizadores Autorizados!^C
 !
+!
+!
+mgcp profile default
+!
+!
+!
+!
+!
+alias exec Vienna ssh 193.136.60.105
+alias exec Budapest ssh 209.165.200.98
+alias exec Liubliana ssh 56.16.20.213
+alias exec Bratislava ssh 56.16.20.214
+alias exec ServiceProvider ssh 63.49.54.21
+alias exec MLS1 ssh 172.19.7.2
+alias exec MLS2 ssh 172.19.7.3
+alias exec SW1 ssh 172.19.7.4
+alias exec SW2 ssh 172.19.7.5
+alias exec AP1 ssh 172.19.7.8
+alias exec AP2 ssh 172.19.7.9
+alias exec dc disconnect ssh vty 0
+banner login ^CCCEfetue um backup de seguranca antes de efetuar alteragues.^C
+banner motd ^CCCAcesso Restrito a Utilizadores Autorizados!^C
 !
 line con 0
  login local
@@ -216,6 +215,8 @@ line vty 5 15
  login local
  transport input ssh
 !
-!
+scheduler allocate 20000 1000
+ntp server 193.136.60.105
 end
+
 
