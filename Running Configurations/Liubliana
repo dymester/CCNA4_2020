@@ -22,6 +22,35 @@ ip cef
 !
 !
 !
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname LiublianaBranch
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+memory-size iomem 5
+clock timezone WET 0 0
+clock summer-time WEST recurring last Sun Mar 1:00 last Sun Oct 2:00
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
 ip domain name cisco.com
 ip host Vienna 193.136.60.106
 ip host Budapest 209.165.200.98
@@ -46,25 +75,35 @@ multilink bundle-name authenticated
 !
 !
 !
-!
-!
+key chain key1
+ key 1
+  key-string 7 075F701E1D5D4C53404A52
+cts logging verbose
 !
 !
 voice-card 0
 !
-crypto pki token default removal timeout 0
 !
 !
 !
 !
-license udi pid CISCO2851 sn FTX1248A0PT
 !
-crypto key generate rsa modulus 1024 exportable
+!
+!
+license udi pid CISCO2911/K9 sn FCZ160270TD
+license accept end user agreement
+license boot module c2900 technology-package securityk9
+license boot module c2900 technology-package uck9
+!
 !
 username cisco privilege 15 secret 5 $1$mERr$9cTjUIEqNGurQiFU.ZeCi1
-username bratislava password 7 13061B13181F
+username BratislavaBranch password 7 070C2D4D5D1A
 !
 redundancy
+!
+!
+!
+!
 !
 !
 !
@@ -107,31 +146,40 @@ interface Loopback7
  ip address 172.19.22.1 255.255.255.0
  ipv6 address 1000:0:0:27::1/64
 !
-interface Tunnel0
- ip address 10.0.0.3 255.255.255.0
- ip mtu 1400
- ip tcp adjust-mss 1360
- tunnel source 2.2.2.2
- tunnel destination 1.1.1.1
-!
 interface Multilink1
  ip address 56.16.20.213 255.255.255.252
+ ip authentication mode eigrp 100 md5
+ ip authentication key-chain eigrp 100 key1
  compress predictor
  ppp quality 80
  ppp authentication chap
  ppp multilink
  ppp multilink group 1
 !
-interface GigabitEthernet0/0
- duplex auto
-!
-interface GigabitEthernet0/1
- bandwidth 20000
- ip address 63.49.54.22 255.255.255.252
+interface Embedded-Service-Engine0/0
  no ip address
+ shutdown
+!
+interface GigabitEthernet0/0
+ no ip address
+ shutdown
  duplex auto
  speed auto
- no shut
+!
+interface GigabitEthernet0/1
+ bandwidth 1000000
+ ip address 63.49.54.22 255.255.255.252
+ ip ospf authentication message-digest
+ ip ospf message-digest-key 1 md5 7 0205085A1815
+ ip ospf hello-interval 5
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/2
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
 !
 interface Serial0/0/0
  bandwidth 20000
@@ -139,18 +187,22 @@ interface Serial0/0/0
  encapsulation ppp
  ppp multilink
  ppp multilink group 1
- no shut
+ clock rate 125000
 !
 interface Serial0/0/1
+ bandwidth 20000
  no ip address
  encapsulation ppp
  ppp multilink
  ppp multilink group 1
- no shut
+ clock rate 125000
+!
 !
 router eigrp 100
+ default-metric 100000 100 255 1 1500
  network 56.16.20.212 0.0.0.3
  network 192.19.16.0 0.0.15.255
+ redistribute ospf 100
  passive-interface Loopback0
  passive-interface Loopback1
  passive-interface Loopback2
@@ -164,34 +216,46 @@ router eigrp 100
 !
 router ospf 10
  router-id 4.1.1.1
+ redistribute eigrp 100 subnets
  passive-interface GigabitEthernet0/0
+ passive-interface Loopback0
+ passive-interface Loopback1
+ passive-interface Loopback2
+ passive-interface Loopback3
+ passive-interface Loopback4
+ passive-interface Loopback5
+ passive-interface Loopback6
+ passive-interface Loopback7
  network 63.49.54.16 0.0.0.7 area 0
  network 192.19.16.0 0.0.15.255 area 3
 !
 router bgp 60003
  bgp log-neighbor-changes
  network 56.16.20.212 mask 255.255.255.252
- network 192.19.16.0 mask 255.255.240.0
+ network 172.19.16.0 mask 255.255.240.0
  neighbor 63.49.54.21 remote-as 60000
 !
 ip forward-protocol nd
+!
 no ip http server
 no ip http secure-server
+!
 ip route 172.19.16.0 255.255.240.0 Null0 200
-
-!
-!
-!
-!
-!
 !
 !
 !
 !
 control-plane
 !
+ !
+ !
+ !
+ !
 !
-!
+mgcp behavior rsip-range tgcp-only
+mgcp behavior comedia-role none
+mgcp behavior comedia-check-media-src disable
+mgcp behavior comedia-sdp-force disable
 !
 mgcp profile default
 !
@@ -199,12 +263,37 @@ mgcp profile default
 !
 !
 !
+!
+!
+gatekeeper
+ shutdown
+!
+!
+ vstack
+alias exec Vienna ssh 193.136.60.105
+alias exec Budapest ssh 209.165.200.98
+alias exec Liubliana ssh 56.16.20.213
+alias exec Bratislava ssh 56.16.20.214
+alias exec ServiceProvider ssh 63.49.54.21
+alias exec MLS1 ssh 172.19.7.2
+alias exec MLS2 ssh 172.19.7.3
+alias exec SW1 ssh 172.19.7.4
+alias exec SW2 ssh 172.19.7.5
+alias exec AP1 ssh 172.19.7.8
+alias exec AP2 ssh 172.19.7.9
+alias exec dc disconnect ssh vty 0
 banner login ^CEfetue um backup de seguranca antes de efetuar alteracoes^C
 banner motd ^CAcesso Restrito a Utilizadores Autorizados^C
 !
 line con 0
  login local
 line aux 0
+line 2
+ no activation-character
+ no exec
+ transport preferred none
+ transport output pad telnet rlogin lapb-ta mop udptn v120 ssh
+ stopbits 1
 line vty 0 4
  login local
  transport input ssh
@@ -213,5 +302,7 @@ line vty 5 15
  transport input ssh
 !
 scheduler allocate 20000 1000
+ntp server 193.136.60.105
+!
 end
 
