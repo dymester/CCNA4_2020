@@ -1,3 +1,4 @@
+version 15.1
 service timestamps debug datetime msec
 service timestamps log datetime msec
 service password-encryption
@@ -107,8 +108,6 @@ interface Multilink1
 !
 interface GigabitEthernet0/0
  no ip address
- ip summary-address eigrp 100 0.0.0.0 0.0.0.0
- shutdown
  duplex auto
  speed auto
 !
@@ -137,6 +136,7 @@ interface Serial0/0/1
 router eigrp 100
  network 56.16.20.212 0.0.0.3
  network 172.19.40.0 0.0.1.255
+ redistribute static metric 10000 1000 255 1 1500
  passive-interface Loopback0
  passive-interface Loopback1
  passive-interface Loopback2
@@ -151,11 +151,14 @@ no ip http server
 no ip http secure-server
 !
 !
+ip route 0.0.0.0 0.0.0.0 GigabitEthernet0/0
 !
 !
 !
-!
-!
+ --More--
+Oct  3 09:36:17.317: %OSPF-4-NOVALIDKEY: No valid authentication send key is available on inte!  !     0
+snmp-server community cisco RO
+snmp-server location Bratislava_EdgeRouter
 !
 !
 control-plane
@@ -181,8 +184,15 @@ alias exec SW2 ssh 172.19.7.5
 alias exec AP1 ssh 172.19.7.8
 alias exec AP2 ssh 172.19.7.9
 alias exec dc disconnect ssh vty 0
-banner login ^CCEfetue um backup de seguranca antes de efetuar alteracoes^C
-banner motd ^CCCAcesso Restrito a Utilizadores Autorizados^C
+banner login ^C
+********************************************
+*Acesso Restrito a Utilizadores Autorizados*
+********************************************^C
+banner motd ^C
+***********************************************************
+*Efetue um backup de seguranca antes de efetuar alteracoes*
+***********************************************************
+^C
 !
 line con 0
  login local
@@ -196,3 +206,5 @@ line vty 5 15
 !
 scheduler allocate 20000 1000
 end
+
+
