@@ -18,19 +18,19 @@ system mtu routing 1500
 !
 !
 ip domain-name cisco.com
-ip host Vienna 172.19.7.17
-ip host Budapest 209.165.200.98
-ip host Liubliana 56.16.20.213
-ip host Bratislava 56.16.20.214
-ip host ServiceProvider 63.49.54.23
-ip host MLS1 172.19.7.2
-ip host MLS2 172.19.7.3
-ip host SW1 172.19.7.4
-ip host SW2 172.19.7.5
-ip host HTTP 172.19.7.6
-ip host DHCP 172.19.7.7
-ip host AP1 172.19.7.8
 ip host AP2 172.19.7.9
+ip host AP1 172.19.7.8
+ip host DHCP 172.19.7.7
+ip host HTTP 172.19.7.6
+ip host SW2 172.19.7.5
+ip host SW1 172.19.7.4
+ip host MLS2 172.19.7.3
+ip host MLS1 172.19.7.2
+ip host ServiceProvider 63.49.54.23
+ip host Bratislava 56.16.20.214
+ip host Liubliana 56.16.20.213
+ip host Budapest 209.165.200.98
+ip host Vienna 172.19.7.17
 !
 !
 crypto pki trustpoint TP-self-signed-879687936
@@ -175,6 +175,7 @@ interface FastEthernet0/11
  switchport mode access
  switchport nonegotiate
  switchport port-security mac-address sticky
+ switchport port-security mac-address sticky 0018.737a.7a08
  switchport port-security
  ip dhcp snooping limit rate 10
 !
@@ -183,6 +184,7 @@ interface FastEthernet0/12
  switchport mode access
  switchport nonegotiate
  switchport port-security mac-address sticky
+ switchport port-security mac-address sticky 0023.5e6d.3b40
  switchport port-security
  ip dhcp snooping limit rate 10
 !
@@ -261,6 +263,7 @@ interface FastEthernet0/21
  switchport mode access
  switchport nonegotiate
  switchport port-security mac-address sticky
+ switchport port-security mac-address sticky 0018.737a.7a09
  switchport port-security
  ip dhcp snooping limit rate 10
  ip dhcp snooping trust
@@ -279,6 +282,7 @@ interface FastEthernet0/23
  switchport mode access
  switchport nonegotiate
  switchport port-security mac-address sticky
+ switchport port-security mac-address sticky 0023.5e6d.3b41
  switchport port-security
  ip dhcp snooping limit rate 10
  ip dhcp snooping trust
@@ -313,10 +317,20 @@ interface Vlan255
 ip default-gateway 172.19.7.14
 ip http server
 ip http secure-server
+logging host 172.19.4.6
+snmp-server community cisco RO
+snmp-server location Vienna_Switch_1
 !
 vstack
-banner login ^CCCEfetue um backup de seguranca antes de efetuar alteracoes^C
-banner motd ^CCCCAcesso Restrito a Utilizadores Autorizados^C
+banner login ^C
+********************************************
+*Acesso Restrito a Utilizadores Autorizados*
+********************************************^C
+banner motd ^C
+***********************************************************
+*Efetue um backup de seguranca antes de efetuar alteracoes*
+***********************************************************
+^C
 alias exec Vienna ssh 193.136.60.105
 alias exec Budapest ssh 209.165.200.98
 alias exec Liubliana ssh 56.16.20.213
