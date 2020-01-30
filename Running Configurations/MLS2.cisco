@@ -168,18 +168,6 @@ interface Port-channel4
  switchport nonegotiate
  ip dhcp snooping trust
 !
-interface Port-channel5
- switchport trunk native vlan 254
- switchport trunk allowed vlan 1-298,300-1005
- switchport mode trunk
- switchport nonegotiate
- ip dhcp snooping trust
-!
-interface GigabitEthernet0/0
- vrf forwarding Mgmt-vrf
- no ip address
- negotiation auto
-!
 interface GigabitEthernet1/0/1
  switchport trunk native vlan 254
  switchport trunk allowed vlan 1-298,300-1005
@@ -308,7 +296,6 @@ interface GigabitEthernet1/0/23
  switchport nonegotiate
  channel-group 4 mode desirable
  ip dhcp snooping trust
-!
 interface GigabitEthernet1/0/24
  switchport trunk native vlan 254
  switchport trunk allowed vlan 1-298,300-1005
@@ -353,6 +340,7 @@ interface Vlan11
 !
 interface Vlan100
  ip address 172.19.4.2 255.255.255.0
+ ip helper-address 172.19.9.5
  standby version 2
  standby 0 ip 172.19.4.254
  standby 0 priority 150
@@ -360,6 +348,7 @@ interface Vlan100
 !
 interface Vlan101
  ip address 172.19.5.2 255.255.255.0
+ ip helper-address 172.19.9.5
  standby version 2
  standby 0 ip 172.19.5.254
  standby 0 priority 150
@@ -367,6 +356,7 @@ interface Vlan101
 !
 interface Vlan200
  ip address 172.19.0.2 255.255.254.0
+ ip helper-address 172.19.9.5
  standby version 2
  standby 0 ip 172.19.1.254
  standby 0 priority 150
@@ -374,6 +364,7 @@ interface Vlan200
 !
 interface Vlan201
  ip address 172.19.6.2 255.255.255.0
+ ip helper-address 172.19.9.5
  standby version 2
  standby 0 ip 172.19.6.254
  standby 0 priority 150
@@ -381,6 +372,7 @@ interface Vlan201
 !
 interface Vlan202
  ip address 172.19.2.2 255.255.254.0
+ ip helper-address 172.19.9.5
  standby version 2
  standby 0 ip 172.19.3.254
  standby 0 priority 150
@@ -441,14 +433,24 @@ ip access-list extended AutoQos-4.0-wlan-Acl-Transactional-Data
  permit tcp any any eq 5985
  permit tcp any any eq 8080
 !
+logging host 172.19.4.6
 !
+snmp-server community cisco RO
+snmp-server location Vienna_MultiLayerSwitch_2
 !
 !
 control-plane
  service-policy input system-cpp-policy
 !
-banner login ^CCCEfetue um backup de seguranca antes de efetuar alteracoes^C
-banner motd ^CCCCAcesso Restrito a Utilizadores Autorizados^C
+banner login ^C
+********************************************
+*Acesso Restrito a Utilizadores Autorizados*
+********************************************^C
+banner motd ^C
+***********************************************************
+*Efetue um backup de seguranca antes de efetuar alteracoes*
+***********************************************************
+^C
 alias exec Vienna ssh 193.136.60.105
 alias exec Budapest ssh 209.165.200.98
 alias exec Liubliana ssh 56.16.20.213
@@ -493,3 +495,4 @@ ap hyperlocation ble-beacon 2
 ap hyperlocation ble-beacon 3
 ap hyperlocation ble-beacon 4
 end
+
