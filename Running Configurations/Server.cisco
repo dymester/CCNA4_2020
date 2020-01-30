@@ -3,7 +3,7 @@ service timestamps debug datetime msec
 service timestamps log datetime msec
 service password-encryption
 !
-hostname server
+hostname DHCP-HTTP
 !
 boot-start-marker
 boot-end-marker
@@ -13,6 +13,8 @@ boot-end-marker
 no aaa new-model
 !
 memory-size iomem 5
+clock timezone WET 0 0
+clock summer-time WEST recurring last Sun Mar 1:00 last Sun Oct 2:00
 !
 dot11 syslog
 ip source-route
@@ -20,22 +22,63 @@ ip source-route
 !
 ip cef
 !
+ip dhcp excluded-address 172.19.4.1 172.19.4.5
+ip dhcp excluded-address 172.19.4.250 172.19.4.254
+ip dhcp excluded-address 172.19.5.1 172.19.5.5
+ip dhcp excluded-address 172.19.5.250 172.19.5.254
+ip dhcp excluded-address 172.19.6.1 172.19.6.5
+ip dhcp excluded-address 172.19.6.250 172.19.6.254
+ip dhcp excluded-address 172.19.2.1 172.19.2.5
+ip dhcp excluded-address 172.19.3.250 172.19.3.254
+ip dhcp excluded-address 172.19.0.1 172.19.0.5
+ip dhcp excluded-address 172.19.1.250 172.19.1.254
+!
+ip dhcp pool ENGINEERING
+ network 172.19.4.0 255.255.255.0
+ default-router 172.19.4.254
+ dns-server 172.16.208.66 193.136.60.10
+ lease 8
+!
+ip dhcp pool ADMINISTRATION
+ network 172.19.5.0 255.255.255.0
+ default-router 172.19.5.254
+ dns-server 172.16.208.66 193.136.60.10
+ lease 8
+!
+ip dhcp pool WIRELESS
+ network 172.19.6.0 255.255.255.0
+ default-router 172.19.6.254
+ dns-server 172.16.208.66 193.136.60.10
+ lease 8
+!
+ip dhcp pool WIRELESS-GUESTS
+ network 172.19.2.0 255.255.254.0
+ default-router 172.19.3.254
+ dns-server 172.16.208.66 193.136.60.10
+ lease 8
+!
+ip dhcp pool VOICE
+ network 172.19.0.0 255.255.254.0
+ default-router 172.19.1.254
+ dns-server 172.16.208.66 193.136.60.10
+ option 150 ip 172.19.8.5
+ lease 8
 !
 !
 ip domain name cisco.com
-ip host Vienna 193.136.60.106
-ip host Budapest 209.165.200.98
-ip host Liubliana 63.49.54.22
 ip host Bratislava 56.16.20.214
-ip host ServiceProvider 209.165.200.99
-ip host MLS1 172.19.7.2
 ip host MLS2 172.19.7.3
-ip host SW1 172.19.7.4
-ip host SW2 172.19.7.5
-ip host HTTP 172.19.7.6
-ip host DHCP 172.19.7.7
-ip host AP1 172.19.7.8
+ip host MLS1 172.19.7.2
+ip host Liubliana 56.16.20.213
+ip host Budapest 209.165.200.98
+ip host Vienna 172.19.7.21
 ip host AP2 172.19.7.9
+ip host AP1 172.19.7.8
+ip host DHCP 172.19.7.7
+ip host HTTP 172.19.7.6
+ip host SW2 172.19.7.5
+ip host SW1 172.19.7.4
+ip host ServiceProvider 63.49.54.23
 no ipv6 cef
 !
 multilink bundle-name authenticated
@@ -57,7 +100,8 @@ crypto pki token default removal timeout 0
 !
 !
 !
-license udi pid CISCO2851 sn FCZ123971WB
+license udi pid CISCO2851 sn FCZ102872K7
+license accept end user agreement
 username cisco privilege 15 secret 5 $1$mERr$9cTjUIEqNGurQiFU.ZeCi1
 !
 redundancy
@@ -72,47 +116,43 @@ redundancy
 !
 !
 interface GigabitEthernet0/0
- no ip address
- shutdown
+ ip address 172.19.8.5 255.255.255.0
  duplex auto
  speed auto
 !
 interface GigabitEthernet0/1
- no ip address
- shutdown
+ ip address 172.19.9.5 255.255.255.0
  duplex auto
  speed auto
 !
 interface Serial0/0/0
  no ip address
  shutdown
- clock rate 125000
+ no fair-queue
+ clock rate 2000000
 !
 interface Serial0/0/1
  no ip address
  shutdown
- clock rate 125000
-!
-interface Serial0/1/0
- no ip address
- shutdown
- clock rate 125000
-!
-interface Serial0/1/1
- no ip address
- shutdown
- clock rate 125000
+ clock rate 2000000
 !
 ip forward-protocol nd
 no ip http server
 no ip http secure-server
 !
 !
+ip route 0.0.0.0 0.0.0.0 GigabitEthernet0/1
+ip route 172.19.7.0 255.255.255.240 GigabitEthernet0/1
+ip route 172.19.8.0 255.255.255.0 GigabitEthernet0/0
+ip route 172.19.9.0 255.255.255.0 GigabitEthernet0/1
+!
+logging 172.19.4.6
 !
 !
 !
 !
-!
+snmp-server community cisco RO
+snmp-server location Internal/External_Servers
 !
 !
 control-plane
@@ -126,8 +166,62 @@ mgcp profile default
 !
 !
 !
-banner login ^CEfetue um backup de seguranca antes de efetuar alteragues.^C
-banner motd ^CAcesso Restrito a Utilizadores Autorizados!^C
+telephony-service
+ max-ephones 64
+ max-dn 128
+ ip source-address 172.19.8.5 port 2000
+ system message *Mensagem de Sistema*
+ cnf-file location flash:
+ load 7912 CP7912080004SCCP080108A.sbin
+ max-conferences 8 gain -6
+ transfer-system full-consult
+!
+!
+ephone-dn  1
+ number 1001
+!
+!
+ephone-dn  2
+ number 1002
+!
+!
+ephone  1
+ device-security-mode none
+ mac-address 0015.63FF.5EB9
+ type 7912
+ button  1:1
+!
+!
+!
+ephone  2
+ device-security-mode none
+ mac-address 0015.63AC.AACD
+ type 7912
+ button  1:2
+!
+!
+!
+alias exec Vienna ssh 193.136.60.105
+alias exec Budapest ssh 209.165.200.98
+alias exec Liubliana ssh 56.16.20.213
+alias exec Bratislava ssh 56.16.20.214
+alias exec ServiceProvider ssh 63.49.54.21
+alias exec MLS1 ssh 172.19.7.2
+alias exec MLS2 ssh 172.19.7.3
+alias exec SW1 ssh 172.19.7.4
+alias exec SW2 ssh 172.19.7.5
+alias exec AP1 ssh 172.19.7.8
+alias exec AP2 ssh 172.19.7.9
+alias exec dc disconnect ssh vty 0
+banner login ^C
+********************************************
+*Acesso Restrito a Utilizadores Autorizados*
+********************************************^C
+banner motd ^C
+***********************************************************
+*Efetue um backup de seguranca antes de efetuar alteracoes*
+***********************************************************
+^C
 !
 line con 0
  login local
@@ -140,4 +234,6 @@ line vty 5 15
  transport input ssh
 !
 scheduler allocate 20000 1000
+ntp server 172.19.7.21
 end
+
