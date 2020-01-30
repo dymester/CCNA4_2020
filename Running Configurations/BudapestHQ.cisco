@@ -40,8 +40,7 @@ no ipv6 cef
 multilink bundle-name authenticated
 !
 !
-!
-!
+
 !
 !
 !
@@ -64,6 +63,25 @@ redundancy
 !
 !
 !
+crypto isakmp policy 10
+ encr 3des
+ authentication pre-share
+ group 5
+crypto isakmp key ViBuda12345 address 193.136.60.105
+crypto isakmp key BudaLiu12345 address 63.49.54.22
+!
+!
+crypto ipsec transform-set ipsecBudapest esp-des esp-md5-hmac
+!
+crypto map mapLiubliana 10 ipsec-isakmp
+ set peer 63.49.54.22
+ set transform-set ipsecBudapest
+ match address 102
+!
+crypto map mapVienna 10 ipsec-isakmp
+ set peer 193.136.60.105
+ set transform-set ipsecBudapest
+ match address 101
 !
 !
 !
@@ -110,24 +128,30 @@ interface Loopback9
  ip address 172.19.36.1 255.255.255.0
  ipv6 address 1000:0:0:19::1/64
 !
-interface Tunnel0
- ip address 10.0.0.2 255.255.255.0
- ip ospf network broadcast
+interface Tunnel10
+ ip address 10.0.0.2 255.255.255.252
  tunnel source 209.165.200.98
  tunnel destination 193.136.60.105
+!
+interface Tunnel20
+ ip address 10.0.0.9 255.255.255.252
+ tunnel source 209.165.200.98
+ tunnel destination 63.49.54.22
 !
 interface GigabitEthernet0/0
  bandwidth 100000
  ip address 209.165.200.98 255.255.255.252
+ ip flow ingress
+ ip flow egress
  ip ospf authentication message-digest
- ip ospf message-digest-key 1 md5 7 110A15040401
+ ip ospf message-digest-key 1 md5 7 13061B13181F
  ip ospf hello-interval 5
  duplex auto
  speed auto
+ crypto map mapLiubliana
 !
 interface GigabitEthernet0/1
  no ip address
- ip ospf authentication message-digest
  shutdown
  duplex auto
  speed auto
@@ -155,7 +179,8 @@ router ospf 10
  passive-interface Loopback7
  passive-interface Loopback8
  passive-interface Loopback9
- network 10.0.0.0 0.0.0.255 area 0
+ network 10.0.0.0 0.0.0.3 area 0
+ network 10.0.0.8 0.0.0.3 area 0
  network 172.19.32.0 0.0.7.255 area 2
  network 209.165.200.96 0.0.0.3 area 0
 !
@@ -168,13 +193,20 @@ ip forward-protocol nd
 no ip http server
 no ip http secure-server
 !
+ip flow-export version 9
+ip flow-export destination 172.19.4.6 514
 !
 ip route 172.19.32.0 255.255.248.0 Null0 200
 !
+logging 172.19.4.6
+access-list 101 permit gre host 209.165.200.98 host 193.136.60.105
+access-list 102 permit gre host 209.165.200.98 host 63.49.54.22
 !
 !
 !
 !
+snmp-server community cisco RO
+snmp-server location Budapest_EdgeRouter
 !
 !
 control-plane
@@ -191,7 +223,8 @@ mgcp profile default
 alias exec Vienna ssh 193.136.60.105
 alias exec Budapest ssh 209.165.200.98
 alias exec Liubliana ssh 56.16.20.213
-alias exec Bratislava ssh 56.16.20.214
+ --More--
+Oct  3 09:29:37.418: %OSPF-4-NOVALIDKEY: No valid authentication send key is available on intealias exec Bratislava ssh 56.16.20.214
 alias exec ServiceProvider ssh 63.49.54.21
 alias exec MLS1 ssh 172.19.7.2
 alias exec MLS2 ssh 172.19.7.3
@@ -200,8 +233,15 @@ alias exec SW2 ssh 172.19.7.5
 alias exec AP1 ssh 172.19.7.8
 alias exec AP2 ssh 172.19.7.9
 alias exec dc disconnect ssh vty 0
-banner login ^CCCEfetue um backup de seguranca antes de efetuar alteragues.^C
-banner motd ^CCCAcesso Restrito a Utilizadores Autorizados!^C
+banner login ^C
+********************************************
+*Acesso Restrito a Utilizadores Autorizados*
+********************************************^C
+banner motd ^C
+***********************************************************
+*Efetue um backup de seguranca antes de efetuar alteracoes*
+***********************************************************
+^C
 !
 line con 0
  login local
