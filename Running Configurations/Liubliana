@@ -1,27 +1,4 @@
-version 15.1
-service timestamps debug datetime msec
-service timestamps log datetime msec
-service password-encryption
-!
-hostname LiublianaBranch
-!
-boot-start-marker
-boot-end-marker
-!
-!
-!
-no aaa new-model
-!
-memory-size iomem 5
-!
-dot11 syslog
-ip source-route
-!
-!
-ip cef
-!
-!
-!
+version 15.4
 service timestamps debug datetime msec
 service timestamps log datetime msec
 service password-encryption
@@ -38,8 +15,8 @@ memory-size iomem 5
 clock timezone WET 0 0
 clock summer-time WEST recurring last Sun Mar 1:00 last Sun Oct 2:00
 !
-!
-!
+ --More--
+Oct  3 09:32:56.717: %OSPF-4-NOVALIDKEY: No valid authentication send key is available on inte!  !     0
 !
 !
 !
@@ -52,7 +29,7 @@ clock summer-time WEST recurring last Sun Mar 1:00 last Sun Oct 2:00
 !
 !
 ip domain name cisco.com
-ip host Vienna 193.136.60.106
+ip host Vienna 193.136.60.105
 ip host Budapest 209.165.200.98
 ip host Liubliana 63.49.54.22
 ip host Bratislava 56.16.20.214
@@ -61,10 +38,9 @@ ip host MLS1 172.19.7.2
 ip host MLS2 172.19.7.3
 ip host SW1 172.19.7.4
 ip host SW2 172.19.7.5
-!ip host HTTP 172.19.7.6
-!ip host DHCP 172.19.7.7
 ip host AP1 172.19.7.8
 ip host AP2 172.19.7.9
+ip cef
 no ipv6 cef
 !
 multilink bundle-name authenticated
@@ -107,10 +83,28 @@ redundancy
 !
 !
 !
+crypto isakmp policy 10
+ encr 3des
+ authentication pre-share
+ group 5
+crypto isakmp key ViLiu12345 address 193.136.60.105
+crypto isakmp key BudaLiu12345 address 209.165.200.98
+!
+!
+crypto ipsec transform-set ipsecLiubliana esp-des esp-md5-hmac
+ mode tunnel
 !
 !
 !
+crypto map mapBudapest 10 ipsec-isakmp
+ set peer 209.165.200.98
+ set transform-set ipsecLiubliana
+ match address 102
 !
+crypto map mapVienna 10 ipsec-isakmp
+ set peer 193.136.60.105
+ set transform-set ipsecLiubliana
+ match address 101
 !
 !
 !
@@ -146,6 +140,16 @@ interface Loopback7
  ip address 172.19.22.1 255.255.255.0
  ipv6 address 1000:0:0:27::1/64
 !
+interface Tunnel10
+ ip address 10.0.0.6 255.255.255.252
+ tunnel source 63.49.54.22
+ tunnel destination 193.136.60.105
+!
+interface Tunnel20
+ ip address 10.0.0.10 255.255.255.252
+ tunnel source 63.49.54.22
+ tunnel destination 209.165.200.98
+!
 interface Multilink1
  ip address 56.16.20.213 255.255.255.252
  ip authentication mode eigrp 100 md5
@@ -169,11 +173,14 @@ interface GigabitEthernet0/0
 interface GigabitEthernet0/1
  bandwidth 1000000
  ip address 63.49.54.22 255.255.255.252
+ ip flow ingress
+ ip flow egress
  ip ospf authentication message-digest
  ip ospf message-digest-key 1 md5 7 0205085A1815
  ip ospf hello-interval 5
  duplex auto
  speed auto
+ crypto map mapBudapest
 !
 interface GigabitEthernet0/2
  no ip address
@@ -202,7 +209,7 @@ router eigrp 100
  default-metric 100000 100 255 1 1500
  network 56.16.20.212 0.0.0.3
  network 192.19.16.0 0.0.15.255
- redistribute ospf 100
+ redistribute ospf 10
  passive-interface Loopback0
  passive-interface Loopback1
  passive-interface Loopback2
@@ -226,6 +233,8 @@ router ospf 10
  passive-interface Loopback5
  passive-interface Loopback6
  passive-interface Loopback7
+ network 10.0.0.4 0.0.0.3 area 0
+ network 10.0.0.8 0.0.0.3 area 0
  network 63.49.54.16 0.0.0.7 area 0
  network 192.19.16.0 0.0.15.255 area 3
 !
@@ -239,11 +248,18 @@ ip forward-protocol nd
 !
 no ip http server
 no ip http secure-server
+ip flow-export version 9
+ip flow-export destination 172.19.4.6 514
 !
 ip route 172.19.16.0 255.255.240.0 Null0 200
 !
+logging host 172.19.4.6
 !
 !
+snmp-server community cisco RO
+snmp-server location Liubliana_EdgeRouter
+access-list 101 permit gre host 63.49.54.22 host 193.136.60.105
+access-list 102 permit gre host 63.49.54.22 host 209.165.200.98
 !
 control-plane
 !
@@ -282,8 +298,15 @@ alias exec SW2 ssh 172.19.7.5
 alias exec AP1 ssh 172.19.7.8
 alias exec AP2 ssh 172.19.7.9
 alias exec dc disconnect ssh vty 0
-banner login ^CEfetue um backup de seguranca antes de efetuar alteracoes^C
-banner motd ^CAcesso Restrito a Utilizadores Autorizados^C
+banner login ^C
+********************************************
+*Acesso Restrito a Utilizadores Autorizados*
+********************************************^C
+banner motd ^C
+***********************************************************
+*Efetue um backup de seguranca antes de efetuar alteracoes*
+***********************************************************
+^C
 !
 line con 0
  login local
@@ -305,4 +328,3 @@ scheduler allocate 20000 1000
 ntp server 193.136.60.105
 !
 end
-
