@@ -1,0 +1,212 @@
+version 12.4
+no service pad
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname Access-Point1
+!
+logging rate-limit console 9
+!
+no aaa new-model
+ip domain name cisco.com
+ip host Vienna 172.19.7.17
+ip host SW2 172.19.7.5
+ip host AP1 172.19.7.8
+ip host AP2 172.19.7.9
+ip host Bratislava 56.16.20.214
+ip host Budapest 209.165.200.98
+ip host DHCP 172.19.9.5
+ip host HTTP 172.19.8.5
+ip host Liubliana 63.49.54.22
+ip host MLS1 172.19.7.2
+ip host MLS2 172.19.7.3
+ip host ServiceProvider 209.165.200.99
+ip host SW1 172.19.7.4
+!
+!
+dot11 syslog
+!
+dot11 ssid VendedorDeMenores
+   vlan 201
+   authentication open
+   authentication key-management wpa
+   mbssid guest-mode
+   wpa-psk ascii 7 070C285F4D061A09160118
+!
+dot11 ssid VendedorDeMenores-GUESTS
+   vlan 202
+   authentication open
+   authentication key-management wpa
+   mbssid guest-mode
+   wpa-psk ascii 7 045802150C2E4B5B0C0A11
+!
+!
+!
+username cisco privilege 15 secret 5 $1$mERr$9cTjUIEqNGurQiFU.ZeCi1
+!
+!
+bridge irb
+!
+!
+interface Dot11Radio0
+ no ip address
+ no ip route-cache
+ !
+ encryption vlan 201 mode ciphers aes-ccm tkip
+ !
+ encryption vlan 202 mode ciphers aes-ccm tkip
+ !
+ ssid VendedorDeMenores
+ !
+ ssid VendedorDeMenores-GUESTS
+ !
+ mbssid
+ station-role root
+ bridge-group 1
+ bridge-group 1 subscriber-loop-control
+ bridge-group 1 block-unknown-source
+ no bridge-group 1 source-learning
+ no bridge-group 1 unicast-flooding
+ bridge-group 1 spanning-disabled
+!
+interface Dot11Radio0.201
+ encapsulation dot1Q 201
+ no ip route-cache
+!
+interface Dot11Radio0.202
+ encapsulation dot1Q 202
+ no ip route-cache
+ bridge-group 202
+ bridge-group 202 subscriber-loop-control
+ bridge-group 202 block-unknown-source
+ no bridge-group 202 source-learning
+ no bridge-group 202 unicast-flooding
+ bridge-group 202 spanning-disabled
+!
+interface Dot11Radio1
+ no ip address
+ no ip route-cache
+ !
+ encryption vlan 201 mode ciphers aes-ccm tkip
+ !
+ encryption vlan 202 mode ciphers aes-ccm tkip
+ !
+ ssid VendedorDeMenores
+ !
+ ssid VendedorDeMenores-GUESTS
+ !
+ no dfs band block
+ mbssid
+ channel dfs
+ station-role root
+ bridge-group 1
+ bridge-group 1 subscriber-loop-control
+ bridge-group 1 block-unknown-source
+ no bridge-group 1 source-learning
+ no bridge-group 1 unicast-flooding
+ bridge-group 1 spanning-disabled
+!
+interface Dot11Radio1.201
+ encapsulation dot1Q 201
+ no ip route-cache
+ bridge-group 201
+ bridge-group 201 subscriber-loop-control
+ bridge-group 201 block-unknown-source
+ no bridge-group 201 source-learning
+ no bridge-group 201 unicast-flooding
+ bridge-group 201 spanning-disabled
+!
+interface Dot11Radio1.202
+ encapsulation dot1Q 202
+ no ip route-cache
+ bridge-group 202
+ bridge-group 202 subscriber-loop-control
+ bridge-group 202 block-unknown-source
+ no bridge-group 202 source-learning
+ no bridge-group 202 unicast-flooding
+ bridge-group 202 spanning-disabled
+!
+interface FastEthernet0
+ no ip address
+ no ip route-cache
+ duplex auto
+ speed auto
+!
+interface FastEthernet0.201
+ encapsulation dot1Q 201
+ no ip route-cache
+ bridge-group 201
+ no bridge-group 201 source-learning
+ bridge-group 201 spanning-disabled
+!
+interface FastEthernet0.202
+ encapsulation dot1Q 202
+ no ip route-cache
+ bridge-group 202
+ no bridge-group 202 source-learning
+ bridge-group 202 spanning-disabled
+!
+interface FastEthernet0.254
+ encapsulation dot1Q 254 native
+ no ip route-cache
+ bridge-group 1
+ no bridge-group 1 source-learning
+ bridge-group 1 spanning-disabled
+!
+interface FastEthernet0.255
+ encapsulation dot1Q 255
+ ip address 172.19.7.8 255.255.255.240
+ no ip route-cache
+ bridge-group 255
+ no bridge-group 255 source-learning
+ bridge-group 255 spanning-disabled
+!
+interface BVI1
+ no ip address
+ no ip route-cache
+!
+interface BVI255
+ ip address 172.19.7.8 255.255.255.240
+ no ip route-cache
+!
+ip http server
+no ip http secure-server
+ip http help-path http://www.cisco.com/warp/public/779/smbiz/prodconfig/help/eag
+bridge 1 route ip
+!
+!
+banner login ^
+********************************************
+*Acesso Restrito a Utilizadores Autorizados*
+********************************************^
+banner motd ^
+***********************************************************
+*Efetue um backup de seguranca antes de efetuar alteracoes*
+***********************************************************
+^
+alias exec Vienna ssh 193.136.60.105
+alias exec Budapest ssh 209.165.200.98
+alias exec Liubliana ssh 56.16.20.213
+alias exec Bratislava ssh 56.16.20.214
+alias exec ServiceProvider ssh 63.49.54.21
+alias exec MLS1 ssh 172.19.7.2
+alias exec MLS2 ssh 172.19.7.3
+alias exec SW1 ssh 172.19.7.4
+alias exec SW2 ssh 172.19.7.5
+alias exec AP1 ssh 172.19.7.8
+alias exec AP2 ssh 172.19.7.9
+alias exec dc disconnect ssh vty 0
+!
+line con 0
+ login local
+ stopbits 1
+line vty 0 4
+ login local
+ transport input ssh
+line vty 5 15
+ login local
+ transport input ssh
+!
+sntp server 172.19.7.17
+end

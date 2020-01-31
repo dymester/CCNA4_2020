@@ -1,4 +1,3 @@
-------------------------MLS1--------------------
 version 16.3
 no service pad
 service timestamps debug datetime msec
@@ -34,8 +33,8 @@ ip host AP1 172.19.7.8
 ip host AP2 172.19.7.9
 ip host Bratislava 56.16.20.214
 ip host Budapest 209.165.200.98
-ip host DHCP 172.19.7.7
-ip host HTTP 172.19.7.6
+ip host DHCP 172.19.9.5
+ip host HTTP 172.19.8.5
 ip host Liubliana 63.49.54.22
 ip host MLS1 172.19.7.2
 ip host MLS2 172.19.7.3
@@ -453,15 +452,15 @@ snmp-server location Vienna_MultiLayerSwitch_1
 control-plane
  service-policy input system-cpp-policy
 !
-banner login ^C
+banner login ^
 ********************************************
 *Acesso Restrito a Utilizadores Autorizados*
-********************************************^C
-banner motd ^C
+********************************************^
+banner motd ^
 ***********************************************************
 *Efetue um backup de seguranca antes de efetuar alteracoes*
 ***********************************************************
-^C
+^
 alias exec Vienna ssh 193.136.60.105
 alias exec Budapest ssh 209.165.200.98
 alias exec Liubliana ssh 56.16.20.213

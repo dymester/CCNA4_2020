@@ -18,19 +18,19 @@ system mtu routing 1500
 !
 !
 ip domain-name cisco.com
-ip host ServiceProvider 63.49.54.23
-ip host SW2 172.19.7.5
-ip host HTTP 172.19.7.6
-ip host DHCP 172.19.7.7
-ip host AP1 172.19.7.8
-ip host AP2 172.19.7.9
-ip host Vienna 172.19.7.21
-ip host Budapest 209.165.200.98
-ip host Liubliana 56.16.20.213
-ip host MLS1 172.19.7.2
-ip host MLS2 172.19.7.3
-ip host Bratislava 56.16.20.214
 ip host SW1 172.19.7.4
+ip host Bratislava 56.16.20.214
+ip host MLS2 172.19.7.3
+ip host MLS1 172.19.7.2
+ip host Liubliana 56.16.20.213
+ip host Budapest 209.165.200.98
+ip host Vienna 172.19.7.21
+ip host AP2 172.19.7.9
+ip host AP1 172.19.7.8
+ip host DHCP 172.19.9.5
+ip host HTTP 172.19.8.5
+ip host SW2 172.19.7.5
+ip host ServiceProvider 63.49.54.23
 !
 !
 crypto pki trustpoint TP-self-signed-817981696
@@ -154,8 +154,6 @@ interface FastEthernet0/7
  switchport port-security maximum 3
  switchport port-security violation restrict
  switchport port-security mac-address sticky
- switchport port-security mac-address sticky 082e.5f12.e03a
- switchport port-security mac-address sticky 0015.63ac.aacd vlan voice
  switchport port-security
  spanning-tree portfast
  ip dhcp snooping limit rate 10
@@ -240,6 +238,8 @@ interface FastEthernet0/14
  switchport port-security maximum 3
  switchport port-security violation restrict
  switchport port-security mac-address sticky
+ switchport port-security mac-address sticky 082e.5f12.e03a
+ switchport port-security mac-address sticky 0015.63ff.5eb9 vlan voice
  switchport port-security
  spanning-tree portfast
  ip dhcp snooping limit rate 10
@@ -252,6 +252,8 @@ interface FastEthernet0/15
  switchport port-security maximum 3
  switchport port-security violation restrict
  switchport port-security mac-address sticky
+ switchport port-security mac-address sticky 082e.5f12.e066
+ switchport port-security mac-address sticky 0015.63ac.aacd vlan voice
  switchport port-security
  spanning-tree portfast
  ip dhcp snooping limit rate 10
@@ -336,8 +338,6 @@ interface FastEthernet0/22
  switchport port-security maximum 3
  switchport port-security violation restrict
  switchport port-security mac-address sticky
- switchport port-security mac-address sticky 082e.5f11.7a5a
- switchport port-security mac-address sticky 0015.63ff.5eb9 vlan voice
  switchport port-security
  spanning-tree portfast
  ip dhcp snooping limit rate 10
@@ -426,4 +426,3 @@ line vty 5 15
 !
 ntp server 172.19.7.21
 end
-
