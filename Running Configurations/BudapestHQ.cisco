@@ -40,7 +40,8 @@ no ipv6 cef
 multilink bundle-name authenticated
 !
 !
-
+!
+!
 !
 !
 !
@@ -196,6 +197,7 @@ no ip http secure-server
 ip flow-export version 9
 ip flow-export destination 172.19.4.6 514
 !
+ip route 63.49.54.0 255.255.255.252 Tunnel10
 ip route 172.19.32.0 255.255.248.0 Null0 200
 !
 logging 172.19.4.6
@@ -223,8 +225,7 @@ mgcp profile default
 alias exec Vienna ssh 193.136.60.105
 alias exec Budapest ssh 209.165.200.98
 alias exec Liubliana ssh 56.16.20.213
- --More--
-Oct  3 09:29:37.418: %OSPF-4-NOVALIDKEY: No valid authentication send key is available on intealias exec Bratislava ssh 56.16.20.214
+alias exec Bratislava ssh 56.16.20.214
 alias exec ServiceProvider ssh 63.49.54.21
 alias exec MLS1 ssh 172.19.7.2
 alias exec MLS2 ssh 172.19.7.3
