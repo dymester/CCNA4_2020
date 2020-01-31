@@ -15,8 +15,8 @@ memory-size iomem 5
 clock timezone WET 0 0
 clock summer-time WEST recurring last Sun Mar 1:00 last Sun Oct 2:00
 !
- --More--
-Oct  3 09:32:56.717: %OSPF-4-NOVALIDKEY: No valid authentication send key is available on inte!  !     0
+!
+!
 !
 !
 !
@@ -105,6 +105,8 @@ crypto map mapVienna 10 ipsec-isakmp
  set peer 193.136.60.105
  set transform-set ipsecLiubliana
  match address 101
+!
+!
 !
 !
 !
@@ -206,10 +208,12 @@ interface Serial0/0/1
 !
 !
 router eigrp 100
- default-metric 100000 100 255 1 1500
+ default-metric 10000 100 255 1 1500
+ network 56.0.0.0
  network 56.16.20.212 0.0.0.3
  network 192.19.16.0 0.0.15.255
  redistribute ospf 10
+ redistribute static
  passive-interface Loopback0
  passive-interface Loopback1
  passive-interface Loopback2
@@ -237,6 +241,7 @@ router ospf 10
  network 10.0.0.8 0.0.0.3 area 0
  network 63.49.54.16 0.0.0.7 area 0
  network 192.19.16.0 0.0.15.255 area 3
+ distribute-list 10 out
 !
 router bgp 60003
  bgp log-neighbor-changes
@@ -251,6 +256,7 @@ no ip http secure-server
 ip flow-export version 9
 ip flow-export destination 172.19.4.6 514
 !
+ip route 10.0.0.0 255.255.255.252 Tunnel10 10.0.0.5
 ip route 172.19.16.0 255.255.240.0 Null0 200
 !
 logging host 172.19.4.6
