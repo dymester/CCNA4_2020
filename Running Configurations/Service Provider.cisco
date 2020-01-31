@@ -88,9 +88,6 @@ redundancy
 !
 !
 !
-interface Tunnel0
- ip address 10.0.0.2 255.255.255.0
-!
 interface Embedded-Service-Engine0/0
  no ip address
  shutdown
@@ -100,6 +97,7 @@ interface GigabitEthernet0/0
  ip address 209.165.200.97 255.255.255.252
  ip flow ingress
  ip flow egress
+ ip ospf authentication message-digest
  ip ospf message-digest-key 1 md5 7 0307570A151C
  ip ospf hello-interval 5
  duplex auto
@@ -110,6 +108,7 @@ interface GigabitEthernet0/1
  ip address 63.49.54.21 255.255.255.252
  ip flow ingress
  ip flow egress
+ ip ospf authentication message-digest
  ip ospf message-digest-key 1 md5 7 05080A0E325F
  ip ospf hello-interval 5
  duplex auto
@@ -126,6 +125,7 @@ interface Serial0/0/0
  ip address 193.136.60.106 255.255.255.252
  ip flow ingress
  ip flow egress
+ ip ospf authentication message-digest
  ip ospf message-digest-key 1 md5 7 060503205F5D
  ip ospf hello-interval 5
 !
@@ -146,7 +146,6 @@ interface Serial0/1/1
 !
 router ospf 10
  router-id 1.1.1.1
- area 0 authentication message-digest
  network 63.49.54.20 0.0.0.3 area 0
  network 193.136.60.104 0.0.0.3 area 0
  network 209.165.200.96 0.0.0.3 area 0
