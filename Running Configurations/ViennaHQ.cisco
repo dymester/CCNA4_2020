@@ -100,6 +100,9 @@ crypto map myvpn 10 ipsec-isakmp
 !
 !
 !
+interface Loopback1
+ no ip address
+!
 interface Tunnel10
  ip address 10.0.0.1 255.255.255.252
  tunnel source 193.136.60.105
@@ -159,7 +162,6 @@ interface Serial0/0/1
 !
 router ospf 10
  router-id 2.1.1.1
- passive-interface GigabitEthernet0/2
  network 10.0.0.0 0.0.0.3 area 0
  network 10.0.0.4 0.0.0.3 area 0
  network 172.19.7.24 0.0.0.7 area 0
@@ -179,8 +181,7 @@ no ip http secure-server
 ip flow-export version 9
 ip flow-export destination 172.19.4.6 514
 !
-ip nat pool NATPOOL 209.165.200.226 209.165.200.230 prefix-length 28
-ip nat inside source list NAT_ACL pool NATPOOL
+ip nat inside source list NAT_ACL interface GigabitEthernet0/2 overload
 ip route 0.0.0.0 0.0.0.0 GigabitEthernet0/2
 ip route 172.19.0.0 255.255.240.0 172.19.7.18
 !
@@ -196,6 +197,9 @@ ip access-list standard NAT_ACL
 !
 snmp-server community cisco RO
 snmp-server location Vienna_EdgeRouter
+snmp-server host 172.19.4.6 version 2c cisco
+access-list 1 permit any
+access-list 69 permit 172.19.0.0 0.0.15.255
 access-list 101 permit gre host 193.136.60.105 host 209.165.200.98
 access-list 102 permit gre host 193.136.60.105 host 56.16.20.213
 !
