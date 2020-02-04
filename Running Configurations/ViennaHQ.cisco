@@ -62,6 +62,7 @@ license boot module c2900 technology-package securityk9
 license boot module c2900 technology-package uck9
 !
 !
+crytpo key generate rsa modulus 1024 exportable
 vtp mode transparent
 username cisco privilege 15 secret 5 $1$mERr$9cTjUIEqNGurQiFU.ZeCi1
 !
