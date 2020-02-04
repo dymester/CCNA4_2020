@@ -53,22 +53,26 @@ int multilink1
 access-group 102 out
 
 Vienna
-access-list 103 permit 172.19.37.128 0.0.0.127 172.19.8.0 0.0.1.255
-access-list 103 permit 172.19.5.0 0.0.0.255 172.19.8.0 0.0.1.255
+access-list 103 permit ip 172.19.37.128 0.0.0.127 172.19.8.0 0.0.1.255
+access-list 103 permit ip 172.19.5.0 0.0.0.255 172.19.8.0 0.0.1.255
 access-list 103 permit udp any 172.19.8.0 0.0.0.255 eq 67
 access-list 103 permit udp any 172.19.8.0 0.0.0.255 eq 68
 access-list 103 permit tcp any 172.19.9.0 0.0.0.255 eq 80
 access-list 103 deny ip any 172.19.8.0 0.0.1.255
-access-list 103 deny ip 172.16.2.0 0.0.1.255 12.19.0.0 0.0.31.255
-access-list 103 deny ip 172.16.2.0 0.0.1.255 172.19.32.0 0.0.7.255
-access-list 103 deny ip 172.16.2.0 0.0.1.255 172.19.40.0 0.0.1.255
-access-list 103 permit tcp host 193.136.60.105 any eq 22
-access-list 103 deny tcp any any eq 22
-access-list 103 permit udp any 172.19.9.4 eq 161
-access-list 103 permit udp any any eq 161
+access-list 103 deny ip 172.16.2.0 0.0.1.255 any
+access-list 103 permit udp any host 172.19.9.4 eq 161
+access-list 103 deny udp any any eq 161
 access-list 103 permit ip any any
 int range g0/0-1
 access-group 103 out
+
+access-list 106 permit tcp host 193.136.60.105 any eq 22
+access-list 106 permit tcp 172.19.8.0 0.0.1.255 any eq 22
+access-list 106 deny tcp any any eq 22
+access-list 106 permit ip any any
+int range g0/0-1
+access-group 106 in
+
 
 access-list 104 permit tcp any any eq 80
 access-list 104 permit ip 172.19.4.0 0.0.0.1.255 any
@@ -100,6 +104,7 @@ int range g0/0-1
 access-group 107 in
 
 Bratislava
+access-list 101 deny ip 
 access-list 101 permit tcp any any eq 80
 access-list 101 permit ip 172.19.4.0 0.0.0.1.255 any
 access-list 101 permit ip 172.19.40.0 0.0.1.255 any
