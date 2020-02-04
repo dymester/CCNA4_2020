@@ -51,15 +51,7 @@ multilink bundle-name authenticated
 !
 
 BratislavaBranch#wr
-Building configuration...
 
-[OK]
-BratislavaBranch#wr
-Building configuration...
-
-[OK]
-BratislavaBranch#sh run
-Building configuration...
 
 
 Current configuration : 3909 bytes
