@@ -160,6 +160,8 @@ interface Multilink1
  ppp authentication chap
  ppp multilink
  ppp multilink group 1
+ ip access-group 104 out
+
 !
 interface Embedded-Service-Engine0/0
  no ip address
@@ -182,6 +184,7 @@ interface GigabitEthernet0/1
  duplex auto
  speed auto
  crypto map mapBudapest
+ ip access-group 101 out
 !
 interface GigabitEthernet0/2
  no ip address
@@ -266,6 +269,21 @@ snmp-server community cisco RO
 snmp-server location Liubliana_EdgeRouter
 access-list 101 permit gre host 63.49.54.22 host 193.136.60.105
 access-list 102 permit gre host 63.49.54.22 host 209.165.200.98
+!
+access-list 103 permit udp 172.19.16.0 0.0.15.255 172.19.8.0 0.0.0.255 eq 67
+access-list 103 permit udp 172.19.16.0 0.0.15.255 172.19.8.0 0.0.0.255 eq 68
+access-list 103 permit tcp 172.19.16.0 0.0.15.255 172.19.9.0 0.0.0.255 eq 80
+access-list 103 deny ip any 172.19.8.0 0.0.1.255
+access-list 103 permit tcp host 63.49.54.22 any eq 22
+access-list 103 deny tcp any any eq 22
+access-list 103 permit udp any 172.19.9.4 eq 161
+access-list 103 deny udp any any eq 161
+access-list 103 permit ip any any
+!
+access-list 104 permit tcp host 56.16.20.213 any eq 22
+access-list 104 deny tcp any any eq 22
+access-list 104 deny udp any any eq 161
+access-list 104 permit ip any any
 !
 control-plane
 !
