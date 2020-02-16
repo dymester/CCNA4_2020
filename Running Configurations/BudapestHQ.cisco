@@ -150,6 +150,8 @@ interface GigabitEthernet0/0
  duplex auto
  speed auto
  crypto map mapLiubliana
+ ip access-group 103 out
+ ip access-group 104 in
 !
 interface GigabitEthernet0/1
  no ip address
