@@ -41,7 +41,7 @@ access-list 103 deny udp any any eq 161
 access-list 103 permit ip any any
 
 int g0/1
-ip access-group 101 out
+ip access-group 103 out
 
 access-list 104 permit tcp host 56.16.20.213 any eq 22
 access-list 104 deny tcp any any eq 22
