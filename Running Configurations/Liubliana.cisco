@@ -164,6 +164,7 @@ interface Multilink1
  ppp authentication chap
  ppp multilink
  ppp multilink group 1
+ ip access-group 102 out
 !
 interface GigabitEthernet0/0
  no ip address
@@ -216,8 +217,20 @@ no ip http secure-server
 ip route 0.0.0.0 0.0.0.0 GigabitEthernet0/0
 !
 !
+access-list 101 permit udp 172.19.16.0 0.0.15.255 172.19.8.0 0.0.0.255 eq 67
+access-list 101 permit udp 172.19.16.0 0.0.15.255 172.19.8.0 0.0.0.255 eq 68
+access-list 101 permit tcp 172.19.16.0 0.0.15.255 172.19.9.0 0.0.0.255 eq 80
+access-list 101 deny ip any 172.19.8.0 0.0.1.255
+access-list 101 permit tcp host 63.49.54.22 any eq 22
+access-list 101 deny tcp any any eq 22
+access-list 101 permit udp any 172.19.9.4 eq 161
+access-list 101 deny udp any any eq 161
+access-list 101 permit ip any any
 !
-!
+access-list 102 permit tcp host 56.16.20.213 any eq 22
+access-list 102 deny tcp any any eq 22
+access-list 102 deny udp any any eq 161
+access-list 102 permit ip any any
 !
 snmp-server community cisco RO
 snmp-server location Bratislava_EdgeRouter
