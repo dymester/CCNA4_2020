@@ -147,6 +147,8 @@ interface GigabitEthernet0/2
  duplex auto
  speed auto
  ipv6 address 2001::1/64
+ ip access-group 104 out
+ ip access-group 105 out
 !
 interface Serial0/0/0
  ip address 193.136.60.105 255.255.255.252
@@ -159,6 +161,7 @@ interface Serial0/0/0
  ip ospf hello-interval 5
  clock rate 2000000
  crypto map ViennaLiubliana
+ ip access-group 107 out
 !
 interface Serial0/0/1
  no ip address
@@ -181,7 +184,61 @@ router bgp 60001
 !
 ip forward-protocol nd
 !
-no ip http server
+no ip http servermgcp profile default
+!
+!
+!
+!
+!
+!
+!
+gatekeeper
+ shutdown
+!
+!
+ vstack
+alias exec Vienna ssh 193.136.60.105
+alias exec Budapest ssh 209.165.200.98
+alias exec Liubliana ssh 56.16.20.213
+alias exec Bratislava ssh 56.16.20.214
+alias exec ServiceProvider ssh 63.49.54.21
+alias exec MLS1 ssh 172.19.7.2
+alias exec MLS2 ssh 172.19.7.3
+alias exec SW1 ssh 172.19.7.4
+alias exec SW2 ssh 172.19.7.5
+alias exec AP1 ssh 172.19.7.8
+alias exec AP2 ssh 172.19.7.9
+alias exec dc disconnect ssh vty 0
+banner login ^C
+********************************************
+*Acesso Restrito a Utilizadores Autorizados*
+********************************************^C
+banner motd ^C
+***********************************************************
+*Efetue um backup de seguranca antes de efetuar alteracoes*
+***********************************************************
+^C
+!
+line con 0
+ login local
+line aux 0
+line 2
+ no activation-character
+ no exec
+ transport preferred none
+ transport output pad telnet rlogin lapb-ta mop udptn v120 ssh
+ stopbits 1
+line vty 0 4
+ login local
+ transport input ssh
+line vty 5 15
+ login local
+ transport input ssh
+!
+scheduler allocate 20000 1000
+ntp server 193.136.60.105
+!
+end
 no ip http secure-server
 ip flow-export version 9
 ip flow-export destination 172.19.4.6 514
@@ -209,10 +266,27 @@ access-list 103 permit udp any host 172.19.9.4 eq 161
 access-list 103 deny udp any any eq 161
 access-list 103 permit ip any any
 !
+access-list 104 permit tcp any any eq 80
+access-list 104 permit ip 172.19.4.0 0.0.0.1.255 any
+access-list 104 permit ip 172.19.40.0 0.0.1.255 any
+access-list 104 permit ip 172.19.20.0 0.0.0.255 any
+access-list 104 deny ip any any
+!
+access-list 105 deny tcp any any eq 22
+access-list 105 permit udp any 172.19.9.4 eq 161
+access-list 105 deny udp any any eq 161
+access-list 105 permit ip any any
+!
 access-list 106 permit tcp host 193.136.60.105 any eq 22
 access-list 106 permit tcp 172.19.8.0 0.0.1.255 any eq 22
+access-list 106 permit tcp 172.19.5.0 0.0.0.255 any eq 22
+access-list 106 permit tcp 172.19.7.0 0.0.0.15 any eq 22
 access-list 106 deny tcp any any eq 22
 access-list 106 permit ip any any
+!
+access-list 107 permit host 193.136.60.105 any eq 22
+access-list 107 deny tcp any any eq 22
+access-list 107 permit ip any any
 !
 snmp-server community cisco RO
 snmp-server location Vienna_EdgeRouter
