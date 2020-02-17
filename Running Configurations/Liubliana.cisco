@@ -276,7 +276,7 @@ access-list 103 permit tcp 172.19.16.0 0.0.15.255 172.19.9.0 0.0.0.255 eq 80
 access-list 103 deny ip any 172.19.8.0 0.0.1.255
 access-list 103 permit tcp host 63.49.54.22 any eq 22
 access-list 103 deny tcp any any eq 22
-access-list 103 permit udp any 172.19.9.4 eq 161
+access-list 103 permit udp any host 172.19.9.4 eq 161
 access-list 103 deny udp any any eq 161
 access-list 103 permit ip any any
 !
