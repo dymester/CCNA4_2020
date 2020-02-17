@@ -53,6 +53,7 @@ int multilink1
 ip access-group 104 out
 
 Vienna
+access-list 103 permit udp any any eq 123
 access-list 103 permit ip 172.19.37.128 0.0.0.127 172.19.8.0 0.0.1.255
 access-list 103 permit ip 172.19.5.0 0.0.0.255 172.19.8.0 0.0.1.255
 access-list 103 permit udp any 172.19.8.0 0.0.0.255 eq 67
