@@ -67,6 +67,8 @@ access-list 106 permit tcp host 193.136.60.105 any eq 22
 access-list 106 permit tcp 172.19.8.0 0.0.1.255 any eq 22
 access-list 106 permit tcp 172.19.5.0 0.0.0.255 any eq 22
 access-list 106 permit tcp 172.19.7.0 0.0.0.15 any eq 22
+access-list 106 permit tcp 172.19.7.16 0.0.0.3 any eq 22
+access-list 106 permit tcp 172.19.7.20 0.0.0.3 any eq 22
 access-list 106 deny tcp any any eq 22
 access-list 106 permit ip any any
 
