@@ -155,8 +155,6 @@ interface Multilink1
  ip address 56.16.20.213 255.255.255.252
  ip authentication mode eigrp 100 md5
  ip authentication key-chain eigrp 100 key1
- compress predictor
- ppp quality 80
  ppp authentication chap
  ppp multilink
  ppp multilink group 1
@@ -199,6 +197,8 @@ interface Serial0/0/0
  ppp multilink
  ppp multilink group 1
  clock rate 125000
+  compress predictor
+ ppp quality 80
 !
 interface Serial0/0/1
  bandwidth 20000
@@ -207,6 +207,8 @@ interface Serial0/0/1
  ppp multilink
  ppp multilink group 1
  clock rate 125000
+  compress predictor
+ ppp quality 80
 !
 !
 router eigrp 100
