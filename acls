@@ -1,5 +1,5 @@
 Budapest:
-access-list 103 permit 172.19.37.128 0.0.0.127 172.19.8.0 0.0.1.255
+access-list 103 permit ip 172.19.37.128 0.0.0.127 172.19.8.0 0.0.1.255
 access-list 103 permit udp any 172.19.8.0 0.0.0.255 eq 67
 access-list 103 permit udp any 172.19.8.0 0.0.0.255 eq 68
 access-list 103 permit tcp any 172.19.9.0 0.0.0.255 eq 80
@@ -9,7 +9,7 @@ access-list 103 deny ip 172.19.34.0 0.0.0.1.255 any
 access-list 103 permit ip 172.19.38.192 0.0.0.93 172.19.41.0 0.0.0.127
 access-list 103 deny ip 172.19.38.192 any 
 access-list 103 permit tcp host 209.165.200.98 any eq 22
-access-list 103 deny any any eq 22
+access-list 103 deny tcp any any eq 22
 access-list 103 permit udp any 172.19.9.4 eq 161
 access-list 103 deny udp any any eq 161
 access-list 103 permit ip any any
